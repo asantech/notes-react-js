@@ -7,3 +7,6 @@
 {"_id":{"$oid":"620d564fe873b9583aea5834"},"name":"TypeScript","__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"62167429484bc03377282c10"},"name":"Clean Code","__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"62364379b02ccb7540655c60"},"name":"Mongoose","desc":"<p>Mongoose provides a straight-forward, schema-based solution to model your application data. It includes built-in type casting, validation, query building, business logic hooks and more, out of the box.</p>","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"623f6761a4d95af605d785e8"},"name":"git","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"623f6768a4d95af605d785ea"},"name":"github","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"623f758ca4d95af605d78609"},"name":"CKEditor 5","__v":{"$numberInt":"0"}}
