@@ -56,12 +56,12 @@ function ElementNoteManagement(){
     if(elementsNotesDatas.length > 0)
         content = elementsNotesDatas.map((elementNoteData,i) => (
             <tr key={i}>
-                <th scope="row">{i+1}</th>
+                <th scope="row">{++i}</th>
                 <td>
                     {elementNoteData.location}
                 </td>
                 <td>
-                    {elementNoteData.element}
+                    {elementNoteData.name}
                 </td>
                 <td>
                     <div className="btn-group me-2" role="group" aria-label="First group">
@@ -90,19 +90,21 @@ function ElementNoteManagement(){
         </tr>;
 
     return (
-        <div className="element-note-management-page container-fluid p-3">
-            <h4 className='inline page-title'>
-              Element Note Management
-            </h4>
-            <InfoCircle/>
-            <div className="element-note-list-segment">
+        <div className="notable-elements-management-page container-fluid p-3">
+            <div className="page-title-box">
+                <h4 className='inline page-title'>
+                Element Note Management
+                </h4>
+                <InfoCircle/>
+            </div>
+            <div className="notable-elements-list-segment">
                 <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
                     <thead>
                         <tr>
                             <th scope="col">R</th>
-                            <th scope="col">Name/Link</th>
-                            <th scope="col">Notes Count</th>
-                            <th scope="col"></th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

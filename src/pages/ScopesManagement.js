@@ -2,8 +2,6 @@ import React , {useState, useEffect, useCallback} from 'react';
 
 import { InfoCircle, Pencil,Trash } from 'react-bootstrap-icons';
 
-import './ScopesManagement.css';
-
 function ScopesManagement(){
 
     const [scopeDatas, setScopeData] = useState([]);
@@ -91,10 +89,12 @@ function ScopesManagement(){
 
     return (
         <div className="scopes-management-page container-fluid p-3">
-            <h4 className='inline page-title'>
-                Scopes Management
-            </h4>
-            <InfoCircle/>
+            <div className='page-title-box'>
+                <h4 className='inline page-title'>
+                    Scopes Management
+                </h4>
+                <InfoCircle/>
+            </div>
             <div className="added-scopes-list-segment">
                 <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
                     <thead>

@@ -81,7 +81,7 @@ function AddElementNote(props){
         }
 
         try{
-            await fetch('http://localhost:5000/api/elements-notes/',{
+            const res = await fetch('http://localhost:5000/api/elements-notes/',{
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,6 +93,8 @@ function AddElementNote(props){
                 }),
             });
 
+            const data = await res.json();
+            notableElementsDatas[selectedNotableElementData.location][selectedNotableElementData.name] = data;
         }catch(err){
             setErr(err.message);
         }
@@ -130,14 +132,16 @@ function AddElementNote(props){
             <div ref={pageSpinnerRef} className="modal-spinner-wrapper d-flex justify-content-center align-items-center visually-hidden">
                 <div className="spinner-border text-primary" role="status"></div>
             </div> 
-            <h4 className='inline page-title'>
-                Add Element Note
-            </h4>
-            <InfoCircle
-                data-element-location = 'add-element-note-page'
-                data-element-name = 'add-element-note-page'
-                onClick = {props.ElementDescInfoIconOnClickHandler}
-            />
+            <div className='page-title-box'>
+                <h4 className='inline page-title'>
+                    Add Element Note
+                </h4>
+                <InfoCircle
+                    data-element-location = 'add-element-note-page'
+                    data-element-name = 'add-element-note-page'
+                    onClick = {props.ElementDescInfoIconOnClickHandler}
+                />
+            </div>
             <div className="add-element-note-segment">
                 <div className="row">
                     <div className="mb-3 col-md-3">
