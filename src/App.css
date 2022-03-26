@@ -1,38 +1,38 @@
-.App {
-  text-align: center;
+a{
+    text-decoration: none !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+button{
+    display: flex;
+    padding: 0;
+    background: none;
+    border: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.table-non-fluid{
+    width: max-content !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.ck.ck-content{
+    background-color: #f8f8f8;
+    border: 1px solid lightgray;
+    border-top: none;
 }
 
-.App-link {
-  color: #61dafb;
+.modal-spinner-wrapper{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: rgba(255,255,255,0.5);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.tooltip-box:hover div[data-id="tooltip"]{
+    transition: 0.5s ease-in; /* search about "all" - why using ease will make the tooltip jump for the first time*/
+    transition-delay: 1.5s;
+}
+
+.inline.page-title{
+    display: inline-block;
+    margin: 0 10px 0 0;
 }

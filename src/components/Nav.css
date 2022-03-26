@@ -1,0 +1,68 @@
+nav{
+    display: grid;
+    align-items: center;
+    grid-auto-flow: column;
+    background-color: #20232a;
+    height: 53px;
+}
+nav .log-in-page-welcome-msg{
+    justify-self: end;
+    color: white;
+}
+nav .nav-links-list{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: right;
+    margin: 0;
+    padding: 0 10px;
+    height: 100%;
+    list-style: none;
+}
+
+nav .logged-out-nav-links-list{
+    justify-self: end;
+}
+
+nav .nav-links-list li{
+    text-decoration: none;
+    width: max-content;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: padding 0.1s;
+}
+nav .nav-links-list li.bordered{
+    border: 1px solid rgb(240, 240, 240);
+}
+nav .nav-links-list li.padded{
+    padding: 7px 20px;
+}
+
+nav .nav-links-list li.small{
+    padding: 5px;
+    height: max-content
+}
+
+nav .nav-links-list li a{ /* بعداً بررسی شود */
+    display: flex;
+}
+
+nav .nav-links-list li,
+nav .nav-links-list li a,
+nav .nav-links-list li button{
+    color: white;
+}
+
+nav .nav-links-list li.right-aligned{
+    margin-left: auto;
+}
+
+nav .nav-links-list li.bordered:hover{
+    border: 1px solid rgb(136, 211, 247);
+    background-color: #424750;
+}
+
+nav .nav-links-list li:hover a,
+nav .nav-links-list li:hover button{
+    color: #61dafb;
+}

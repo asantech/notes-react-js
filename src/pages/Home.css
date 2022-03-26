@@ -1,0 +1,10 @@
+.home-page{
+    padding: 30px;
+}
+
+
+.home-page .subject-cards-container{
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}

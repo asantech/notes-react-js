@@ -1,0 +1,16 @@
+.scope-card{
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #282c34;
+    color: white;
+    cursor: pointer;
+}
+
+.scope-card:hover{
+    color: #61dafb;
+    background-color: #424750;
+}

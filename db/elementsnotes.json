@@ -1,0 +1,5 @@
+{"_id":{"$oid":"622d060e9041dc284036c4ca"},"location":"sign-in-page","note":"<p>new</p>","name":"sign-in-page"}
+{"_id":{"$oid":"622e5b747c3e64ba9e34e6ff"},"location":"sign-up-page","note":"<p>The “sign up” page</p>","name":"sign-up-page"}
+{"_id":{"$oid":"6236ed5b37dbe691f8b2a8a5"},"location":"add-element-note-page","note":"<p>این اولی هست</p>","name":"add-element-note-page"}
+{"_id":{"$oid":"623c995d1d624f4a5f8f587b"},"location":"add-element-note-page","note":"<p>سلام</p>","name":"save-btn"}
+{"_id":{"$oid":"623d858a9212b20f3edee99e"},"location":"app-info-page","note":"<p>This app is written for:</p><ol><li>writing all of your notes</li><li>being to give scopes (folders) to your notes&nbsp;</li></ol><p>It is going to be written by these ways:</p><ol><li>vanilla JS</li><li>React JS (current version)</li><li>Vue JS</li></ol><p>Which in each of these ways, the code structure will be written different for practice.</p>","name":"app-info-page"}
