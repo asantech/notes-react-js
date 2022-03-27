@@ -138,7 +138,7 @@ function SignUp(props){
     }
 
     return (
-        <div className="sign-up-page">
+        <div className="sign-up-page p-3">
             <div className="container py-4">        
                 <div className="row">
                     <div className="col-3"></div>

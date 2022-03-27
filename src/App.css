@@ -40,3 +40,16 @@ button{
 .page-title-box{
     margin: 0 0 20px;
 }
+
+.app-segment .pages-segment{
+    padding: 53px 0 0;
+}
+
+.app-segment .ck.ck-content{
+    min-height: 140px;
+    max-height: 400px;
+}
+
+.app-segment div.ck-editor-content-output figure.table > table{
+    width: 100%;
+}

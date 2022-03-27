@@ -5,8 +5,6 @@ import { InfoCircle } from 'react-bootstrap-icons';
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
-import './AddScope.css';
-
 function AddScope(){
 
     const [name, setName] = useState('');
@@ -65,7 +63,7 @@ function AddScope(){
     }
 
     return (
-        <div className="add-scope-page container-fluid">
+        <div className="add-scope-page p-3">
             <div className="row">
                 <form className="add-scope-segment needs-validation" onSubmit={formSubmissionHandler}>
                     <div className="p-2 col-md-6">

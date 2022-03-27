@@ -35,14 +35,14 @@ function AppInfo() {
   },[]);
   
   return (
-    <div className='add-scope-page container-fluid'>   
+    <div className='add-scope-page p-3'>   
         <div className='page-title-box'>
           <h4 className='inline page-title'>
               App Info
           </h4>
           <InfoCircle/> 
         </div>    
-        <div dangerouslySetInnerHTML={{__html: appInfoPageContent}} />   
+        <div className="ck-editor-content-output" dangerouslySetInnerHTML={{__html: appInfoPageContent}} />   
     </div>
   );
 }

@@ -88,7 +88,7 @@ function ScopesManagement(){
         </tr>;
 
     return (
-        <div className="scopes-management-page container-fluid p-3">
+        <div className="scopes-management-page p-3">
             <div className='page-title-box'>
                 <h4 className='inline page-title'>
                     Scopes Management

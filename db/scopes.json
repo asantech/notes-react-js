@@ -10,3 +10,4 @@
 {"_id":{"$oid":"623f6761a4d95af605d785e8"},"name":"git","__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"623f6768a4d95af605d785ea"},"name":"github","__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"623f758ca4d95af605d78609"},"name":"CKEditor 5","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"624029f3bb69510fff83e7c5"},"name":"Design Patterns","__v":{"$numberInt":"0"}}

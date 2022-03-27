@@ -135,7 +135,7 @@ function SignIn(props){
     }
 
     return (
-        <div className="sign-in-page">
+        <div className="sign-in-page p-3">
             <div className="container py-4">        
                 <div className="row">
                     <div className="col-3"></div>

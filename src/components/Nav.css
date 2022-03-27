@@ -2,7 +2,10 @@ nav{
     display: grid;
     align-items: center;
     grid-auto-flow: column;
+    position: fixed;
+    z-index: 100;
     background-color: #20232a;
+    width: 100%;
     height: 53px;
 }
 nav .log-in-page-welcome-msg{

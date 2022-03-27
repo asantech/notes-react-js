@@ -51,7 +51,7 @@ function Home(){
         content = <p>Loading ...</p>;
 
     return (
-        <div className="home-page">
+        <div className="home-page p-3">
             <div className="row row-cols-2">
                 <div className="subject-cards-segment col col-md-6">
                     <div className="subject-cards-container">

@@ -94,7 +94,7 @@ function AddElementNote(props){
             });
 
             const data = await res.json();
-            notableElementsDatas[selectedNotableElementData.location][selectedNotableElementData.name] = data;
+            notableElementsDatas[selectedNotableElementData.location][selectedNotableElementData.name] = data; // تحقیق شود که آیا این کار صحیح است؟
         }catch(err){
             setErr(err.message);
         }
@@ -128,7 +128,7 @@ function AddElementNote(props){
     },[fetchElementsSpecsHandler]);
 
     return (
-        <div className="add-element-note-page">
+        <div className="add-element-note-page p-3">
             <div ref={pageSpinnerRef} className="modal-spinner-wrapper d-flex justify-content-center align-items-center visually-hidden">
                 <div className="spinner-border text-primary" role="status"></div>
             </div> 
@@ -191,9 +191,6 @@ function AddElementNote(props){
                         }}
                         data = {ckEditorContent}
                         editor={DecoupledEditor}
-                        config={{
-                            height: '500px',
-                        }}
                     />
                 </div>
                 <button type="button" className='add-btn btn btn-success' onClick={saveElementNoteHandler}>

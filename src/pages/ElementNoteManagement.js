@@ -80,20 +80,24 @@ function ElementNoteManagement(){
         ));
 
     if(err)
-        content = <tr>
-            <td colSpan="4">{err}</td>
-        </tr>;
+        content = (
+            <tr>
+                <td colSpan="4">{err}</td>
+            </tr>
+        );
 
     if(isLoadingMsg)
-        content = <tr>
-            <td colSpan="4">Loading ...</td>
-        </tr>;
+        content = (
+            <tr>
+                <td colSpan="4">Loading ...</td>
+            </tr>
+        );
 
     return (
-        <div className="notable-elements-management-page container-fluid p-3">
+        <div className="notable-elements-management-page p-3">
             <div className="page-title-box">
                 <h4 className='inline page-title'>
-                Element Note Management
+                    Element Note Management
                 </h4>
                 <InfoCircle/>
             </div>

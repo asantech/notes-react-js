@@ -4,8 +4,6 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 import { InfoCircle } from 'react-bootstrap-icons';
 
-import './AddNote.css';
-
 function AddNote(){
     
     const [scopeDatas, setScopeData] = useState([]);
@@ -164,8 +162,13 @@ function AddNote(){
     },[fetchScopesHandler]);
 
     return (
-        <div className="add-note-page">
-            <InfoCircle/>
+        <div className="add-note-page p-3">
+            <div className='page-title-box'>
+                <h4 className='inline page-title'>
+                    Add Note
+                </h4>
+                <InfoCircle/>
+            </div>
             <div className="add-note-segment">
                 <div className="mb-3 col-md-7">
                     <label className="form-label" htmlFor="title">Title</label>
@@ -192,6 +195,7 @@ function AddNote(){
                             <option value="web-content" data-has-url="true" data-is-book-type="false">Web Content</option>
                             <option value="web-video" data-has-url="true" data-is-book-type="false">Web Video</option>
                             <option value="book" data-has-url="false" data-is-book-type="true">Book</option>
+                            <option value="video-course" data-has-url="false" data-is-book-type="false">Video Course</option>
                         </select>
                     </div>
                 </div>
