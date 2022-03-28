@@ -1,4 +1,4 @@
-import { InfoCircle } from 'react-bootstrap-icons';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 function Sources(){
 
@@ -8,7 +8,10 @@ function Sources(){
                 <h4 className='inline page-title'>
                     sources-page
                 </h4>
-                <InfoCircle/>
+                <NotableElementInfoIcon 
+                    elementLocation = 'sources-page'
+                    elementName = 'sources-page'
+                />
             </div>
         </div>
     ); 

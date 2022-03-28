@@ -1,6 +1,8 @@
 import React , {useState, useEffect, useCallback} from 'react';
 
-import { InfoCircle, Pencil,Trash } from 'react-bootstrap-icons';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
+
+import { Pencil,Trash } from 'react-bootstrap-icons';
 
 function ElementNoteManagement(){
 
@@ -99,7 +101,10 @@ function ElementNoteManagement(){
                 <h4 className='inline page-title'>
                     Element Note Management
                 </h4>
-                <InfoCircle/>
+                <NotableElementInfoIcon 
+                    elementLocation = 'element-note-management-page'
+                    elementName = 'element-note-management-page'
+                />
             </div>
             <div className="notable-elements-list-segment">
                 <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">

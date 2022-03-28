@@ -4,11 +4,11 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
-import { InfoCircle } from 'react-bootstrap-icons';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import './AddElementNote.css';
 
-function AddElementNote(props){
+function AddElementNote(){
     
     const pageSpinnerRef = useRef();
     const [notableElementsDatas, setNotableElementsDatas] = useState([]);
@@ -134,12 +134,11 @@ function AddElementNote(props){
             </div> 
             <div className='page-title-box'>
                 <h4 className='inline page-title'>
-                    Add Element Note
+                    Element Note
                 </h4>
-                <InfoCircle
-                    data-element-location = 'add-element-note-page'
-                    data-element-name = 'add-element-note-page'
-                    onClick = {props.ElementDescInfoIconOnClickHandler}
+                <NotableElementInfoIcon 
+                    elementLocation = 'add-element-note-page'
+                    elementName = 'add-element-note-page'
                 />
             </div>
             <div className="add-element-note-segment">

@@ -1,9 +1,13 @@
-import React, {useState, useRef} from 'react';
+import React, {useContext,useState, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { InfoCircle } from 'react-bootstrap-icons';
+import AuthContext from '../contexts/auth-context';
+
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 function SignIn(props){
+
+    const authContext = useContext(AuthContext);
 
     let navigate = useNavigate();
     const signInFormSpinnerRef = useRef();
@@ -76,7 +80,7 @@ function SignIn(props){
         passwordInputIsEmptyMsgDisplay('hide');
     }
 
-    async function signInHandler(){
+    async function signInBtnOnClickHandler(){
 
         let invalidInputValsCount = 0;
 
@@ -122,8 +126,7 @@ function SignIn(props){
             if(!response.ok)
                 throw new Error(data.message);
 
-            localStorage.setItem('userIsSignedIn','1');
-            props.setUserIsSignedIn(true);
+            authContext.signInHandler();
             usernameInputRef.current.value = '';
             passwordInputRef.current.value = '';
             signInFormDimmerDisplay('hide');
@@ -156,11 +159,10 @@ function SignIn(props){
                                     Email
                                 </label>
                             </div> 
-                            <InfoCircle
-                                data-element-location = 'sign-in-page'
-                                data-element-name = 'sign-in-page'
-                                onClick = {props.ElementDescInfoIconOnClickHandler}
-                            />      
+                            <NotableElementInfoIcon 
+                                elementLocation = 'sign-in-page'
+                                elementName = 'sign-in-page'
+                            />  
                         </div>   
                         <div className='sign-in-form'>
                             <div className={'mb-3 ' + (signInMethod === 'username' ? '' : 'visually-hidden')}>
@@ -184,7 +186,7 @@ function SignIn(props){
                                     Please enter password
                                 </div>
                             </div>
-                            <button type="text" className="btn btn-primary" onClick={signInHandler}>Sign in</button>
+                            <button type="text" className="btn btn-primary" onClick={signInBtnOnClickHandler}>Sign in</button>
                         </div>
                     </div>
                     <div className="col-3"></div>

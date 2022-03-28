@@ -2,7 +2,7 @@ import React , {useState,useEffect,useCallback} from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
-import { InfoCircle } from 'react-bootstrap-icons';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 function AddNote(){
     
@@ -167,7 +167,10 @@ function AddNote(){
                 <h4 className='inline page-title'>
                     Add Note
                 </h4>
-                <InfoCircle/>
+                <NotableElementInfoIcon 
+                    elementLocation = 'add-note-page'
+                    elementName = 'add-note-page'
+                />
             </div>
             <div className="add-note-segment">
                 <div className="mb-3 col-md-7">

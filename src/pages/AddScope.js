@@ -1,7 +1,7 @@
-import React , {useState, useEffect, useCallback} from 'react';
+import React , {useState} from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-import { InfoCircle } from 'react-bootstrap-icons';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
@@ -70,7 +70,10 @@ function AddScope(){
                         <h4 className='inline page-title'>
                             Add Scope
                         </h4>
-                        <InfoCircle/>
+                        <NotableElementInfoIcon 
+                            elementLocation = 'add-scope-page'
+                            elementName = 'add-scope-page'
+                        />
                     </div>
                     <div className="p-2 col-md-6">
                         <label className="form-label" htmlFor="name">name</label>

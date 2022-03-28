@@ -40,7 +40,6 @@ function AppInfo() {
           <h4 className='inline page-title'>
               App Info
           </h4>
-          <InfoCircle/> 
         </div>    
         <div className="ck-editor-content-output" dangerouslySetInnerHTML={{__html: appInfoPageContent}} />   
     </div>

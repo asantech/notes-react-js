@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 import { useNavigate } from "react-router-dom";
 
-import { InfoCircle } from 'react-bootstrap-icons';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 function SignUp(props){
 
@@ -166,11 +166,10 @@ function SignUp(props){
                                     Both
                                 </label>
                             </div>    
-                            <InfoCircle 
-                                data-element-location = 'sign-up-page'
-                                data-element-name = 'sign-up-page'
-                                onClick = {props.ElementDescInfoIconOnClickHandler}
-                            /> 
+                            <NotableElementInfoIcon 
+                                elementLocation = 'sign-up-page'
+                                elementName = 'sign-up-page'
+                            />
                         </div>     
                         <div className='sign-in-form'>
                             <div className='mb-3'>

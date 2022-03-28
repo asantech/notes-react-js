@@ -1,8 +1,10 @@
-import React, { Component, Fragment, useState, useCallback} from 'react';
+import React, { useContext,Component, Fragment, useState, useCallback} from 'react';
 
 import ReactDOM from 'react-dom';
 
 import { Link } from 'react-router-dom';
+
+import AuthContext from '../contexts/auth-context';
 
 import ReactTooltip from 'react-tooltip';
 
@@ -17,10 +19,10 @@ function Nav(props){
     let
         selectedLang = props.selectedLang,
         setLang = props.setLang,
-        userIsSignedIn = props.userIsSignedIn,
         settingsModal
     ;
 
+    const authContext = useContext(AuthContext);
     const [showSettingsModal, setSettingsModalDisplay] = useState(false);
     const [err, setErr] = useState(null);
 
@@ -97,7 +99,7 @@ function Nav(props){
         }
     }
 
-    function SettingsModal(props) {
+    function SettingsModal( ) {
 
         const handleClose = () => setSettingsModalDisplay(false);
         const [serverCodeStructure, setServerCodeStructure] = useState();
@@ -249,15 +251,16 @@ function Nav(props){
     }
 
     function exitBtnOnClickHandler(){
-        localStorage.removeItem('userIsSignedIn');
-        props.setUserIsSignedIn(false);
+        // localStorage.removeItem('userIsSignedIn');
+        // authContext.setUserIsSignedIn(false);
+        authContext.signOutHandler();
     }
-
+ 
     return (
         <Fragment>
             <nav>
                 {
-                    !userIsSignedIn && 
+                    !authContext.userIsSignedIn && 
                     <>
                         <span className="log-in-page-welcome-msg">
                             You will get the best user experience by using Notes app :-)
@@ -283,7 +286,7 @@ function Nav(props){
                     </>
                 }
                 {
-                    userIsSignedIn &&
+                    authContext.userIsSignedIn &&
                     <ul className='logged-in-nav-links-list nav-links-list'>
                         <li>
                             <Link to="/home" className="tooltip-box" exact="true" data-tip data-for="home-tip">
@@ -329,7 +332,7 @@ function Nav(props){
                             <Link to="/add-element-note" className="tooltip-box" exact="true" data-tip data-for="add-element-note-tip">
                                 <Plus/><JournalText/>
                                 <ReactTooltip id="add-element-note-tip" place="bottom" effect="solid">
-                                    Add Element Note
+                                    Element Note
                                 </ReactTooltip>
                             </Link>
                         </li>

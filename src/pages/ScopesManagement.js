@@ -1,6 +1,8 @@
 import React , {useState, useEffect, useCallback} from 'react';
 
-import { InfoCircle, Pencil,Trash } from 'react-bootstrap-icons';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
+
+import {Pencil,Trash } from 'react-bootstrap-icons';
 
 function ScopesManagement(){
 
@@ -93,7 +95,10 @@ function ScopesManagement(){
                 <h4 className='inline page-title'>
                     Scopes Management
                 </h4>
-                <InfoCircle/>
+                <NotableElementInfoIcon 
+                    elementLocation = 'scopes-management-page'
+                    elementName = 'scopes-management-page'
+                />
             </div>
             <div className="added-scopes-list-segment">
                 <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
