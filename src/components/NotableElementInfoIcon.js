@@ -9,7 +9,7 @@ function NotableElementInfoIcon(props) {
     const notableElementsContext = useContext(NotableElementsContext);
 
     function infoCircleOnClickHandler(){
-        notableElementsContext.NotableElementInfoIconOnClickHandler(props);
+        notableElementsContext.setNotableElementInfo(props);
     }
 
     return (

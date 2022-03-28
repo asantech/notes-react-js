@@ -1,4 +1,4 @@
-import React, {useContext,useState, useCallback} from 'react';
+import React, { useContext, useState, useRef, useCallback, useEffect } from 'react';
 
 import { Button, Modal } from 'react-bootstrap';
 
@@ -12,11 +12,15 @@ function ElementNoteModal() {
     const [elementNote, setElementNote] = useState();
     const [spinnerIsShown, setSpinnerIsShown] = useState(false);
 
-    async function fetchElementDataHandler(){
+    const activeHttpReqs = useRef([]);
+
+    const fetchElementDataHandler  = useCallback(async ()=>{
 
         setSpinnerIsShown(true);
         try{
-            const response = await fetch('http://localhost:5000/api/elements-notes/',{
+            const httpAbortCtrl = new AbortController;
+            activeHttpReqs.current.push(httpAbortCtrl);
+            const res = await fetch('http://localhost:5000/api/elements-notes/',{
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
@@ -25,10 +29,11 @@ function ElementNoteModal() {
                     elementNoteLocation: notableElementsContext.elementNoteLocation,
                     elementNoteName: notableElementsContext.elementNoteName,
                 }),
+                signal: activeHttpReqs.signal,
             });
 
-            const data = await response.json();
-            if(!response.ok)
+            const data = await res.json();
+            if(!res.ok)
                 throw new Error(data.message);
 
 
@@ -42,15 +47,21 @@ function ElementNoteModal() {
             //     document.getElementById('toasts-container-root')
             // );
         }
-    };
+    },[notableElementsContext]); 
 
     function onEnterHandler(){
         fetchElementDataHandler();
     }
 
     function onExitedHandler(){
-      console.log('onExitedHandler'); // توسعه داده شود (پاک کردن محتوای مدال پس از کامل بسته شدن مدال)
+        setElementNote('');
     }
+
+    useEffect(()=>{
+        return ()=>{
+            activeHttpReqs.current.forEach(abortCtrl => abortCtrl.abort());
+        }
+    },[]);
 
     return (
         <Modal 

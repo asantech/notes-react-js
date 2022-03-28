@@ -2,12 +2,10 @@ import React, {useState} from 'react';
 
 const NotableElementsContext = React.createContext({
     elementNoteName: undefined,
-    setElementNoteName: () => {},
     elementNoteLocation: undefined,
-    setElementNoteLocation: () => {},
     elementNoteModalDisplay: undefined,
     setElementNoteModalDisplay: () => {},
-    NotableElementInfoIconOnClickHandler: () => {},
+    setNotableElementInfo: () => {},
 });
 
 export const NotableElementsContextProvider = (props) => {
@@ -16,7 +14,7 @@ export const NotableElementsContextProvider = (props) => {
     const [elementNoteName, setElementNoteName] = useState();
     const [elementNoteModalDisplay, setElementNoteModalDisplay] = useState(false);
 
-    function NotableElementInfoIconOnClickHandler(props){
+    function setNotableElementInfo(props){
         setElementNoteLocation(props.elementLocation);
         setElementNoteName(props.elementName);
         setElementNoteModalDisplay(true);
@@ -26,12 +24,10 @@ export const NotableElementsContextProvider = (props) => {
         <NotableElementsContext.Provider
             value={{
                 elementNoteName,
-                setElementNoteName,
                 elementNoteLocation,
-                setElementNoteLocation,
                 elementNoteModalDisplay,
                 setElementNoteModalDisplay,
-                NotableElementInfoIconOnClickHandler
+                setNotableElementInfo
             }}
         >
             {props.children}

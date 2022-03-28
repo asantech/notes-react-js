@@ -1,7 +1,5 @@
 import React, {useState,useEffect,useCallback} from 'react';
 
-import { InfoCircle } from 'react-bootstrap-icons';
-
 function AppInfo() {
 
   const [appInfoPageContent,setAppInfoPageContent] = useState('');
