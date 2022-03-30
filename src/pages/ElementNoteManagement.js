@@ -2,41 +2,90 @@ import React , {useState, useEffect, useCallback} from 'react';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
-import { Pencil,Trash } from 'react-bootstrap-icons';
+import {useHttpClient} from '../shared/hooks/http-hook';
+
+function extractTextFromHTMLStr(htmlStr) {
+    var tmpDiv = document.createElement('div');
+    tmpDiv.innerHTML = htmlStr;
+    return tmpDiv.textContent || tmpDiv.innerText;
+};
+
+function countWords(str) {
+    return (
+        str
+            .replace(/(^\s*)|(\s*$)/gi,'')
+            .replace(/[ ]{2,}/gi,' ')
+            .replace(/\n /,'\n')
+            .split(' ')
+            .length
+    );
+};
+
+function getWordsCount(str) {                            
+    return (
+        str
+            .split(' ')
+            .filter(n => n != '')
+            .length
+    );
+}
 
 function ElementNoteManagement(){
 
     const [elementsNotesDatas, setElementsNotesDatas] = useState([]);
     const [isLoadingMsg, setLoadingMsg] = useState(false);
-    const [err, setErr] = useState(null);
+    // const [err, setErr] = useState(null);
+
+    const {isLoading, err, sendRequest, clearErr} = useHttpClient();
+    // const fetchElementsNotesHandler = useCallback(async () => {
+
+    //     setLoadingMsg(true);
+    //     setErr(null);
+
+    //     try{
+    //         const response = await fetch('http://localhost:5000/api/elements-notes/',{
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-type': 'application/json',
+    //             },
+    //         });
+
+    //         const data = await response.json();
+    //         if(!response.ok)
+    //             throw new Error(data.message); // آیا throw بماند؟
+
+    //         const elementsNotesDatasArray = [];
+
+    //         for(const id in data)
+    //             elementsNotesDatasArray.push(data[id]);
+
+    //         setElementsNotesDatas(elementsNotesDatasArray);
+    //         setLoadingMsg(false);
+    //     }catch(err){
+    //         setLoadingMsg(false);
+    //         setErr(err.message);
+    //     }
+    // },[]);
 
     const fetchElementsNotesHandler = useCallback(async () => {
 
-        setLoadingMsg(true);
-        setErr(null);
-
         try{
-            const response = await fetch('http://localhost:5000/api/elements-notes/',{
-                method: 'GET',
-                headers: {
+            const responseData = await sendRequest(
+                'http://localhost:5000/api/elements-notes/',
+                'GET',
+                {
                     'Content-type': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-            if(!response.ok)
-                throw new Error(data.message); // آیا throw بماند؟
+                }
+            );
 
             const elementsNotesDatasArray = [];
 
-            for(const id in data)
-                elementsNotesDatasArray.push(data[id]);
+            for(const id in responseData)
+                elementsNotesDatasArray.push(responseData[id]);
 
             setElementsNotesDatas(elementsNotesDatasArray);
-            setLoadingMsg(false);
         }catch(err){
-            setLoadingMsg(false);
-            setErr(err.message);
+
         }
     },[]);
 
@@ -45,7 +94,7 @@ function ElementNoteManagement(){
     },[fetchElementsNotesHandler]);
 
     let content;
-
+ 
     if(elementsNotesDatas.length === 0)
         content = (
             <tr>
@@ -58,25 +107,15 @@ function ElementNoteManagement(){
     if(elementsNotesDatas.length > 0)
         content = elementsNotesDatas.map((elementNoteData,i) => (
             <tr key={i}>
-                <th scope="row">{++i}</th>
+                <th scope="row" className="text-center">{++i}</th>
                 <td>
                     {elementNoteData.location}
                 </td>
                 <td>
                     {elementNoteData.name}
                 </td>
-                <td>
-                    <div className="btn-group me-2" role="group" aria-label="First group">
-                        <button type="button" className="btn btn-success btn-sm">
-                            <i className="bi bi-trash-fill"></i>
-                            <Pencil />
-                        </button>
-                    </div>
-                    <div className="btn-group me-2" role="group" aria-label="Second group">
-                        <button type="button" className="btn btn-danger btn-sm">
-                            <Trash />
-                        </button>
-                    </div>
+                <td className="text-center">
+                    {getWordsCount(extractTextFromHTMLStr(elementNoteData.note))}
                 </td>
             </tr>
         ));
@@ -88,7 +127,7 @@ function ElementNoteManagement(){
             </tr>
         );
 
-    if(isLoadingMsg)
+    if(isLoading)
         content = (
             <tr>
                 <td colSpan="4">Loading ...</td>
@@ -110,10 +149,10 @@ function ElementNoteManagement(){
                 <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
                     <thead>
                         <tr>
-                            <th scope="col">R</th>
+                            <th scope="col" className="text-center">R</th>
                             <th scope="col">Location</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">Words Count</th>
                         </tr>
                     </thead>
                     <tbody>

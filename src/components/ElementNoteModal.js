@@ -3,6 +3,8 @@ import React, { useContext, useState, useRef, useCallback, useEffect } from 'rea
 import { Button, Modal } from 'react-bootstrap';
 
 import NotableElementsContext from '../contexts/notable-elements-context';
+
+import './ElementNoteModal.css';
  
 function ElementNoteModal() {
 
@@ -14,7 +16,7 @@ function ElementNoteModal() {
 
     const activeHttpReqs = useRef([]);
 
-    const fetchElementDataHandler  = useCallback(async ()=>{
+    const fetchElementDataHandler = useCallback(async ()=>{
 
         setSpinnerIsShown(true);
         try{
@@ -35,7 +37,6 @@ function ElementNoteModal() {
             const data = await res.json();
             if(!res.ok)
                 throw new Error(data.message);
-
 
             setElementNote(data.note);
             setSpinnerIsShown(false);
@@ -65,6 +66,7 @@ function ElementNoteModal() {
 
     return (
         <Modal 
+          bsPrefix="element-note-modal modal"
           show={notableElementsContext.elementNoteModalDisplay} 
           onHide={handleClose}
           onEnter={onEnterHandler}
@@ -79,7 +81,7 @@ function ElementNoteModal() {
               <Modal.Title>Element Description Modal</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-              <div dangerouslySetInnerHTML={{__html: elementNote}} />
+              <div class='content-container' dangerouslySetInnerHTML={{__html: elementNote}} />
           </Modal.Body>
           <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>

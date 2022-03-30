@@ -17,6 +17,8 @@ function AddElementNote(){
     const [ckEditorContent, setCKEditorContent] = useState('');
     const [err, setErr] = useState(null);
 
+    const activeHttpReqs = useRef([]);
+
     function pageSpinnerDisplay(val){
         if(arguments.length){
             if(val === 'show')
@@ -26,17 +28,45 @@ function AddElementNote(){
         }
     }
 
+    function selectedElementLocationOnChangeHandler(e){
+        let 
+            selectedOptionDOM = e.target.selectedOptions[0],
+            selectedNotableElementsLocation = selectedOptionDOM.getAttribute('value'),
+            firstNotableElementData = Object.values(notableElementsDatas[selectedNotableElementsLocation])[0]
+        ;
+
+        setSelectedNotableElementsLocation(selectedNotableElementsLocation);
+        setSelectedNotableElementData(firstNotableElementData);
+        setCKEditorContent(firstNotableElementData.note);
+    }
+    
+    function selectedElementNameOnChangeHandler(e){
+        let 
+            selectedOptionDOM = e.target.selectedOptions[0],
+            selectedNotableElementData = notableElementsDatas[selectedOptionDOM.getAttribute('data-location')][selectedOptionDOM.getAttribute('value')]
+        ;
+        setSelectedNotableElementData(selectedNotableElementData);
+        setCKEditorContent(selectedNotableElementData.note);
+    }
+
     const fetchElementsSpecsHandler = useCallback(async () => {
 
+        const httpAbortCtrl = new AbortController;
+        activeHttpReqs.current.push(httpAbortCtrl);
         try{
             const response = await fetch('http://localhost:5000/api/elements-notes/',{
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json',
                 },
+                signal: httpAbortCtrl.signal,
             });
 
             const data = await response.json();
+
+            // activeHttpReqs.current = activeHttpReqs.current.filter(
+            //     reqCtrl => reqCtrl !== httpAbortCtrl
+            // );
 
             if(!response.ok)
                 throw new Error(data.message);  
@@ -66,7 +96,7 @@ function AddElementNote(){
         }
     },[]);
 
-    async function saveElementNoteHandler(e){
+    const saveElementNoteHandler = useCallback(async () => {
 
         pageSpinnerDisplay('show');
 
@@ -80,6 +110,8 @@ function AddElementNote(){
             return;
         }
 
+        const httpAbortCtrl = new AbortController;
+        activeHttpReqs.current.push(httpAbortCtrl);
         try{
             const res = await fetch('http://localhost:5000/api/elements-notes/',{
                 method: 'PATCH',
@@ -91,41 +123,28 @@ function AddElementNote(){
                     elementNoteName: selectedNotableElementData.name,
                     note: ckEditorContent,
                 }),
+                signal: httpAbortCtrl.signal,
             });
 
             const data = await res.json();
+
             notableElementsDatas[selectedNotableElementData.location][selectedNotableElementData.name] = data; // تحقیق شود که آیا این کار صحیح است؟
         }catch(err){
             setErr(err.message);
         }
 
         pageSpinnerDisplay('hide');
-    }
-
-    function selectedElementLocationOnChangeHandler(e){
-        let 
-            selectedOptionDOM = e.target.selectedOptions[0],
-            selectedNotableElementsLocation = selectedOptionDOM.getAttribute('value'),
-            firstNotableElementData = Object.values(notableElementsDatas[selectedNotableElementsLocation])[0]
-        ;
-
-        setSelectedNotableElementsLocation(selectedNotableElementsLocation);
-        setSelectedNotableElementData(firstNotableElementData);
-        setCKEditorContent(firstNotableElementData.note);
-    }
-    
-    function selectedElementNameOnChangeHandler(e){
-        let 
-            selectedOptionDOM = e.target.selectedOptions[0],
-            selectedNotableElementData = notableElementsDatas[selectedOptionDOM.getAttribute('data-location')][selectedOptionDOM.getAttribute('value')]
-        ;
-        setSelectedNotableElementData(selectedNotableElementData);
-        setCKEditorContent(selectedNotableElementData.note);
-    }
+    },[selectedNotableElementData,ckEditorContent]);
 
     useEffect(() => {
         fetchElementsSpecsHandler();
     },[fetchElementsSpecsHandler]);
+
+    useEffect(() => {
+        return () => {
+            activeHttpReqs.current.forEach(abortCtrl => abortCtrl.abort());
+        }
+    },[]);
 
     return (
         <div className="add-element-note-page p-3">
@@ -174,16 +193,17 @@ function AddElementNote(){
                     <CKEditor
                         onReady={ editor => {
 
-                            editor.ui.getEditableElement().parentElement.insertBefore(
-                                editor.ui.view.toolbar.element,
-                                editor.ui.getEditableElement()
-                            );
+                            if(editor) // روش های دیگر هم بررسی شود
+                                editor.ui.getEditableElement().parentElement.insertBefore(
+                                    editor.ui.view.toolbar.element,
+                                    editor.ui.getEditableElement()
+                                );
 
                             // this.editor = editor;
                         }}
                         onError={({willEditorRestart}) => {
                             if (willEditorRestart)
-                                this.editor.ui.view.toolbar.element.remove();
+                                this.editor.ui.view.toolbar.element.remove(); // آیا نیازی به گذاشتن شرط وجود editor هست؟
                         }}
                         onBlur = {(evt,editor) => {
                             setCKEditorContent(editor.getData());   

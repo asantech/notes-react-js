@@ -4,6 +4,36 @@ import { Pencil,Trash } from 'react-bootstrap-icons';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
+function createRandomNum(min, max) {  
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}  
+
+function confirmDel(){
+    let 
+        randomNum = createRandomNum(10,90),
+        confirmDelPromptResult 
+    ;
+
+    confirmDelPromptResult = prompt(`جهت تایید حذف کردن، عدد  ${randomNum} را وارد ورودی ذیل نمایید`);
+
+    if(confirmDelPromptResult === null)
+        return false;
+    else if(confirmDelPromptResult.trim() === ''){
+        alert('عددی را وارد ننموده اید.');
+        return false;
+    }else if(randomNum != confirmDelPromptResult.trim()){
+        alert('عدد تایید حذف را اشتباه وارد نموده اید.');
+        return false;
+    }else
+        return true;
+}
+
+function delBtnOnClickHandler(){
+    if(confirmDel()){
+
+    };
+}
+
 function NotesManagement(){
 
     const [notesDatas, setNotesDatas] = useState([]);
@@ -63,7 +93,7 @@ function NotesManagement(){
                         </button>
                     </div>
                     <div className="btn-group me-2" role="group" aria-label="Second group">
-                        <button type="button" className="btn btn-danger btn-sm">
+                        <button type="button" className="btn btn-danger btn-sm" onClick={delBtnOnClickHandler}>
                             <Trash />
                         </button>
                     </div>

@@ -39,12 +39,7 @@ function App() {
           />
           <div className='pages-segment'>
             <Routes>
-              <Route path='/' element={
-                authContext.userIsSignedIn ? 
-                <Home/> 
-                : 
-                <SignUp/> 
-              }/>
+              <Route path='/' element={authContext.userIsSignedIn ? <Home/> : <SignUp/>}/>
               <Route path='/sign-up' element={<SignUp/>}/>
               <Route exact path='/sign-in' element={<SignIn/>}/>
               <Route exact path='/home' element={<Home/>}/>
@@ -53,9 +48,7 @@ function App() {
               <Route exact path='/add-note' element={<AddNote/>}/>
               <Route exact path='/notes-management' element={<NotesManagement/>}/>
               <Route exact path='/add-element-note' element={<AddElementNote/>}/>
-              <Route exact path='/element-note-management' element={
-                <ElementNoteManagement/> //
-              }/>
+              <Route exact path='/element-note-management' element={<ElementNoteManagement/>}/>
               <Route exact path='/sources' element={<Sources/>}/>
               <Route exact path='/app-info' element={<AppInfo/>}/>
             </Routes>

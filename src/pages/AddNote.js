@@ -1,4 +1,4 @@
-import React , {useState,useEffect,useCallback} from 'react';
+import React , {useState,useEffect,useCallback,useRef} from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
@@ -8,18 +8,115 @@ function AddNote(){
     
     const [scopeDatas, setScopeData] = useState([]);
     const [title, setTitle] = useState('');
+    const [type, setType] = useState(0);
     const [selectedScopeId, setSelectedScopeId] = useState(null);
     const [selectedSrcTypeIsURLType, setSelectedSrcTypeIsURLType] = useState('false');
-    const [srcTypeIsBook, setSrcTypeIsBook] = useState('false');
-    const [bookName, setBookName] = useState('');
+    const [srcHasName, setSrcHasName] = useState();
+    const [sourceName, setSourceName] = useState('');
     const [selectedSrcTypeId, setSelectedSrcTypeId] = useState(null);
     const [titleIsValid, setTitleIsValid] = useState(true);
-    const [bookNameIsValid, setBookNameIsValid] = useState(true);
+    const [sourceNameIsValid, setSourceNameIsValid] = useState(true);
     const [srcURL, setSrcURL] = useState('');
     const [srcURLIsValid, setSRCURLIsValid] = useState(true);
     const [ckEditorContent, setCKEditorContent] = useState('');
     const [isAddBtnSpinnerDisplayed, setAddBtnSpinnerDisplay] = useState(false);
     const [err, setErr] = useState(null);
+
+    const srcTypes = [
+        {
+            id: 'user-note',
+            lbl: 'User Note',
+            data: {
+                hasName: false,
+                hasURL: false,
+            },
+        },
+        {
+            id: 'web-content',
+            lbl: 'Web Content',
+            data: {
+                hasName: false,
+                hasURL: true,
+            },
+        },
+        {
+            id: 'web-video',
+            lbl: 'Web Video',
+            data: {
+                hasName: false,
+                hasURL: true,
+            },
+        },
+        {
+            id: 'book',
+            lbl: 'Book',
+            data: {
+                hasName: true,
+                hasURL: false,
+            },
+        },
+        {
+            id: 'video-course',
+            lbl: 'Video Course',
+            data: {
+                hasName: true,
+                hasURL: true,
+            },
+        },
+    ];
+
+    const activeHttpReqs = useRef([]);
+
+    function noteTypeOnChangeHandler(e){
+        setType(+e.target.getAttribute('data-val'));
+    }
+
+    function scopeOnChangeHandler(e){
+        let selectedOptionDOM = e.target.selectedOptions[0];
+        setSelectedScopeId(selectedOptionDOM.getAttribute('value'));
+    }
+
+    function sourceTypeOnChangeHandler(e){
+        let 
+            selectedOptionDOM = e.target.selectedOptions[0],
+            selectedOptionDOMData = JSON.parse(selectedOptionDOM.getAttribute('data-data')) 
+        ;
+        setSelectedSrcTypeId(selectedOptionDOM.getAttribute('data-id'));
+        setSelectedSrcTypeIsURLType(selectedOptionDOMData.hasURL);
+        setSrcHasName(selectedOptionDOMData.hasName)
+        setSRCURLIsValid(true);
+        setSourceNameIsValid(true);
+    }
+
+    const titleInputOnChangeHandler = event => {
+        setTitle(event.target.value);
+        if(title.trim())
+            setTitleIsValid(true);
+    }
+
+    function srcURLInputOnChangeHandler(event){
+        setSrcURL(event.target.value);
+        if(srcURL.trim())
+            setSRCURLIsValid(true);
+    }
+
+    function bookNameInputOnChangeHandler(event){
+        setSourceName(event.target.value);
+        if(sourceName.trim())
+            setSourceNameIsValid(true);
+    }
+
+    function bookNameInputFocusHandler(){
+        setSourceNameIsValid(true);
+    }
+
+    function titleInputFocusHandler(){
+        setTitleIsValid(true);
+    }
+
+    function srcURLInputFocusHandler(){
+        setSRCURLIsValid(true);
+    }
 
     const fetchScopesHandler = useCallback(async () => {
 
@@ -43,41 +140,43 @@ function AddNote(){
         }
     },[]);
 
-    async function addNoteHandler(e){
+    async function addNoteHandler(){
  
         setAddBtnSpinnerDisplay(true);
 
         let validationErrs = [];
- 
+   
         if(!title.trim()){
             validationErrs.push('title');
             setTitleIsValid(false);
         }
-
+ 
         if(!ckEditorContent){
             validationErrs.push('note');
         }
-
+ 
         if(selectedSrcTypeIsURLType === 'true'){
             if(!srcURL){
                 validationErrs.push('srcURL');
                 setSRCURLIsValid(false);
             }
         }
-
-        if(srcTypeIsBook === 'true'){
-            if(!bookName){
-                validationErrs.push('bookName');
-                setBookNameIsValid(false);
+ 
+        if(srcHasName === 'true'){
+            if(!sourceName){
+                validationErrs.push('sourceName');
+                setSourceNameIsValid(false);
             }
         }
-
+ 
         if(validationErrs.length){
             setAddBtnSpinnerDisplay(false);
             return;
         }
-
+ 
         try{
+            // const httpAbortCtrl = new AbortController;
+            // httpAbortCtrl.current.push(httpAbortCtrl);
             await fetch('http://localhost:5000/api/notes',{
                 method: 'POST',
                 headers: {
@@ -85,75 +184,36 @@ function AddNote(){
                 },
                 body: JSON.stringify(function(){
                     let paramsObj = {
-                        title,
                         scopeId: selectedScopeId,
                         sourceTypeId: selectedSrcTypeId,
-                        desc: ckEditorContent,
+                        title,
+                        type,
+                        note: ckEditorContent,
                     };
 
                     if(srcURL)
                         paramsObj.srcURL = srcURL;
 
-                    if(bookName)
-                        paramsObj.bookName = bookName;
+                    if(sourceName)
+                        paramsObj.sourceName = sourceName;
 
                     return paramsObj;
                 }()),
+                // signal: httpAbortCtrl.signal
             });
 
-            setTitle('');
-            setSrcURL('');
-            setBookName('');
-            setCKEditorContent('');
+            (function ResetAllELements(){
+                setTitle('');
+                setType(0);
+                setSrcURL('');
+                setSourceName('');
+                setCKEditorContent('');
+            })();
         }catch(err){
             setErr(err.message);
         }
 
         setAddBtnSpinnerDisplay(false);
-    }
-
-    function scopeOnChangeHandler(e){
-        let selectedOptionDOM = e.target.selectedOptions[0];
-        setSelectedScopeId(selectedOptionDOM.getAttribute('value'));
-    }
-
-    function sourceTypeOnChangeHandler(e){
-        let selectedOptionDOM = e.target.selectedOptions[0];
-        setSelectedSrcTypeIsURLType(selectedOptionDOM.getAttribute('data-has-url'));
-        setSrcTypeIsBook(selectedOptionDOM.getAttribute('data-is-book-type'))
-        setSelectedSrcTypeId(selectedOptionDOM.getAttribute('value'));
-        setSRCURLIsValid(true);
-        setBookNameIsValid(true);
-    }
-
-    const titleInputOnChangeHandler = event => {
-        setTitle(event.target.value);
-        if(title.trim())
-            setTitleIsValid(true);
-    }
-
-    function srcURLInputOnChangeHandler(event){
-        setSrcURL(event.target.value);
-        if(srcURL.trim())
-            setSRCURLIsValid(true);
-    }
-
-    function bookNameInputOnChangeHandler(event){
-        setBookName(event.target.value);
-        if(bookName.trim())
-            setBookNameIsValid(true);
-    }
-
-    function bookNameInputFocusHandler(){
-        setBookNameIsValid(true);
-    }
-
-    function titleInputFocusHandler(){
-        setTitleIsValid(true);
-    }
-
-    function srcURLInputFocusHandler(){
-        setSRCURLIsValid(true);
     }
 
     useEffect(() => {
@@ -180,12 +240,28 @@ function AddNote(){
                         Please enter note's title
                     </div>
                 </div>
+                <div className="mb-3">
+                    <label className="form-label">Type</label>
+                    &nbsp;&nbsp;
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" data-val="0" name="note-type" id="note-type-public" checked={type === 0 ? 'checked' : ''} onChange={noteTypeOnChangeHandler}/>
+                        <label className="form-check-label" htmlFor="note-type-public">
+                            public
+                        </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" data-val="1" name="note-type" id="note-type-private" checked={type === 1 ? 'checked' : ''} onChange={noteTypeOnChangeHandler}/>
+                        <label className="form-check-label" htmlFor="note-type-private">
+                            private
+                        </label>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="mb-3 col-md-2">
                         <label className="form-label" htmlFor="Scope">Scope</label>
                         <select className="form-select" aria-label="Default select example" onChange={scopeOnChangeHandler}>
                             {
-                                scopeDatas.map((scope,i) => (
+                                scopeDatas.map((scope) => (
                                     <option key={scope._id} value={scope._id}>{scope.name}</option>
                                 ))
                             }
@@ -193,27 +269,27 @@ function AddNote(){
                     </div>
                     <div className="mb-3 col-md-2">
                         <label className="form-label" htmlFor="source-type">SourceType</label>
-                        <select className="form-select" aria-label="Default select example" onChange={sourceTypeOnChangeHandler}>
-                            <option value="user-note" data-has-url="false" data-is-book-type="false" defaultValue>User Note</option>
-                            <option value="web-content" data-has-url="true" data-is-book-type="false">Web Content</option>
-                            <option value="web-video" data-has-url="true" data-is-book-type="false">Web Video</option>
-                            <option value="book" data-has-url="false" data-is-book-type="true">Book</option>
-                            <option value="video-course" data-has-url="false" data-is-book-type="false">Video Course</option>
+                        <select className="form-select" aria-label="Default select example" defaultValue={selectedSrcTypeId} onChange={sourceTypeOnChangeHandler}>
+                            {
+                                srcTypes.map((srcType) => (
+                                    <option key={srcType.id} value={srcType.id} data-data={JSON.stringify(srcType.data)}>{srcType.lbl}</option>
+                                ))
+                            }
                         </select>
                     </div>
                 </div>
-                <div className={'mb-3 col-md-7' + (selectedSrcTypeIsURLType === 'false' ? ' visually-hidden' : '')}>
+                <div className={'mb-3 col-md-7' + (srcHasName === false ? ' visually-hidden' : '')}>
+                    <label className="form-label" htmlFor="source-name">Source's Name</label>
+                    <input id="source-name" name="source-name" type="text" className={'form-control ' + (sourceNameIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={bookNameInputOnChangeHandler} onFocus={bookNameInputFocusHandler} value={sourceName} autoComplete="off"></input>
+                    <div className="invalid-feedback">
+                        Please enter source's name
+                    </div>
+                </div>
+                <div className={'mb-3 col-md-7' + (selectedSrcTypeIsURLType === false ? ' visually-hidden' : '')}>
                     <label className="form-label" htmlFor="source-url">Source URL</label>
                     <input id="source-url" name="source-url" type="text" className={'form-control ' + (srcURLIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={srcURLInputOnChangeHandler} onFocus={srcURLInputFocusHandler} value={srcURL} autoComplete="off"></input>
                     <div className="invalid-feedback">
                         Please enter note's source URL
-                    </div>
-                </div>
-                <div className={'mb-3 col-md-7' + (srcTypeIsBook === 'false' ? ' visually-hidden' : '')}>
-                    <label className="form-label" htmlFor="source-url">Book Name</label>
-                    <input id="book-name" name="book-name" type="text" className={'form-control ' + (bookNameIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={bookNameInputOnChangeHandler} onFocus={bookNameInputFocusHandler} value={bookName} autoComplete="off"></input>
-                    <div className="invalid-feedback">
-                        Please enter book's name
                     </div>
                 </div>
                 <div className="mb-3">
@@ -221,12 +297,13 @@ function AddNote(){
                     <CKEditor
                         onReady={ editor => {
 
-                            editor.ui.getEditableElement().parentElement.insertBefore(
-                                editor.ui.view.toolbar.element,
-                                editor.ui.getEditableElement()
-                            );
+                            if(editor)
+                                editor.ui.getEditableElement().parentElement.insertBefore(
+                                    editor.ui.view.toolbar.element,
+                                    editor.ui.getEditableElement()
+                                );
 
-                            // this.editor = editor;
+                            // this.editor = editor; // علت خطا دادن بررسی شود
                         } }
                         onError={({willEditorRestart}) => {
                             if (willEditorRestart)
@@ -237,9 +314,6 @@ function AddNote(){
                         }}
                         data = {ckEditorContent}
                         editor={ DecoupledEditor }
-                        config={ {
-                            height: '500px',
-                        } }
                     />
                 </div>
                 <button type="button" className="add-btn btn btn-primary" onClick={addNoteHandler}>

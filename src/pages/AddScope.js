@@ -31,7 +31,7 @@ function AddScope(){
         setCKEditorContent('');
     }
 
-    async function addScopeHandler(e){
+    async function addScopeHandler(){
  
         setAddBtnSpinnerDisplay(true);
  
@@ -91,10 +91,11 @@ function AddScope(){
                             }}
                             onReady={ editor => {
 
-                                editor.ui.getEditableElement().parentElement.insertBefore(
-                                    editor.ui.view.toolbar.element,
-                                    editor.ui.getEditableElement()
-                                );
+                                if(editor)
+                                    editor.ui.getEditableElement().parentElement.insertBefore(
+                                        editor.ui.view.toolbar.element,
+                                        editor.ui.getEditableElement()
+                                    );
                                     
                                 // this.editor = editor; // علت بررسی شود
                             }}
