@@ -1,6 +1,8 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import ScopeCard from '../components/cards/ScopeCard';
+
+import { useHttpClient } from '../shared/hooks/http-hook';
 
 import './Home.css';
 
@@ -8,23 +10,18 @@ function Home(){
 
     const [scopeDatas, setScopeData] = useState([]);
     const [isLoadingCards, setLoadingCards] = useState(false);
-    const [err, setErr] = useState(null);
+
+    const {sendRequest, err, clearErr} = useHttpClient();
 
     const fetchScopesHandler = useCallback(async () => {
 
         setLoadingCards(true);
-        setErr(null);
+        clearErr(); // چرا اینجا؟
 
         try{
-            const response = await fetch('http://localhost:5000/api/scopes');
-            
-            if(!response.ok){
-                throw new Error('Something went wrong!');
-            }
-
-            setLoadingCards(false);
+            await sendRequest('http://localhost:5000/api/scopes');
         }catch(err){
-            setErr(err.message);
+ 
         }
 
         setLoadingCards(false);

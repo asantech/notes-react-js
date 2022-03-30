@@ -1,4 +1,4 @@
-function getWordsCount(str) {                            
+export function getWordsCount(str) {                            
     return (
         str
             .split(' ')

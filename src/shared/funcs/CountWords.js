@@ -1,4 +1,4 @@
-function countWords(str) {
+export function countWords(str) {
     return (
         str
             .replace(/(^\s*)|(\s*$)/gi,'')

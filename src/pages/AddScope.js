@@ -1,9 +1,12 @@
-import React , {useState} from 'react';
+import React , { useState } from 'react';
+
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+
+import { useHttpClient } from '../shared/hooks/http-hook';
 
 function AddScope(){
 
@@ -11,8 +14,8 @@ function AddScope(){
     const [nameIsValid,setNameIsValid] = useState(true);
 
     const [ckEditorContent, setCKEditorContent] = useState('');
-    const [isAddBtnSpinnerDisplayed, setAddBtnSpinnerDisplay] = useState(false);
-    const [err, setErr] = useState(null);
+
+    const {isLoading, sendRequest} = useHttpClient();
 
     const nameInputChangeHandler = event => {
         setName(event.target.value);
@@ -33,37 +36,33 @@ function AddScope(){
 
     async function addScopeHandler(){
  
-        setAddBtnSpinnerDisplay(true);
- 
-        if(!name.trim()){
-            setAddBtnSpinnerDisplay(false);
+        if(!name.trim())
             return;
-        }
 
         try{
-            await fetch('http://localhost:5000/api/scopes',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(function(){
+            await sendRequest(
+                'http://localhost:5000/api/scopes',
+                'POST',
+                undefined,
+                JSON.stringify(function(){
                     let body = {
                         name,
                     };
                     if(ckEditorContent)
                         body.desc = ckEditorContent;
                     return body;
-                }()),
-            });
+                }())
+            );
         }catch(err){
-            setErr(err.message);
+ 
         }
-
-        setAddBtnSpinnerDisplay(false);
     }
 
     return (
         <div className="add-scope-page p-3">
+            <div className={'spinner-wrapper d-flex justify-content-center align-items-center' + (isLoading ? '' : ' visually-hidden')}>
+                <div className="spinner-border text-primary" role="status"></div>
+            </div> 
             <div className="row">
                 <form className="add-scope-segment needs-validation" onSubmit={formSubmissionHandler}>
                     <div className="p-2 col-md-6">
@@ -110,7 +109,6 @@ function AddScope(){
                     </div>
                     <div className="p-2 col-md-12">
                         <button type="submit" className="add-btn btn btn-primary" onClick={addScopeHandler}>
-                            <span className={'spinner-border spinner-border-sm' + (isAddBtnSpinnerDisplayed ? '' : ' visually-hidden')} role="status" aria-hidden="true"></span>
                             Add
                         </button>
                     </div>

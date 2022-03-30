@@ -1,11 +1,12 @@
-import React, {useContext,useState, useRef} from 'react';
+import React, { useContext, useState, useRef } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '../contexts/auth-context';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
-function SignIn(props){
+function SignIn(){
 
     const authContext = useContext(AuthContext);
 

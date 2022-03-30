@@ -1,4 +1,4 @@
-import React , {useState,useEffect,useCallback,useRef} from 'react';
+import React , { useState, useEffect, useCallback } from 'react';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
@@ -6,27 +6,16 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
-import './AddElementNote.css';
+import { useHttpClient } from '../shared/hooks/http-hook';
 
 function AddElementNote(){
     
-    const pageSpinnerRef = useRef();
     const [notableElementsDatas, setNotableElementsDatas] = useState([]);
     const [selectedNotableElementData, setSelectedNotableElementData] = useState([]);
     const [selectedNotableElementsLocation, setSelectedNotableElementsLocation] = useState();
     const [ckEditorContent, setCKEditorContent] = useState('');
-    const [err, setErr] = useState(null);
 
-    const activeHttpReqs = useRef([]);
-
-    function pageSpinnerDisplay(val){
-        if(arguments.length){
-            if(val === 'show')
-                pageSpinnerRef.current.classList.remove('visually-hidden');
-            else if(val === 'hide')
-                pageSpinnerRef.current.classList.add('visually-hidden');
-        }
-    }
+    const {isLoading, sendRequest} = useHttpClient();
 
     function selectedElementLocationOnChangeHandler(e){
         let 
@@ -51,34 +40,17 @@ function AddElementNote(){
 
     const fetchElementsSpecsHandler = useCallback(async () => {
 
-        const httpAbortCtrl = new AbortController;
-        activeHttpReqs.current.push(httpAbortCtrl);
         try{
-            const response = await fetch('http://localhost:5000/api/elements-notes/',{
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                signal: httpAbortCtrl.signal,
-            });
+            const resData = await sendRequest('http://localhost:5000/api/elements-notes/');
 
-            const data = await response.json();
-
-            // activeHttpReqs.current = activeHttpReqs.current.filter(
-            //     reqCtrl => reqCtrl !== httpAbortCtrl
-            // );
-
-            if(!response.ok)
-                throw new Error(data.message);  
-       
-            if(data.length){
+            if(resData.length){
                 let elementNoteLocationsMap = {};
-                for(let i in data){
-                    let location = data[i].location;
+                for(let i in resData){
+                    let location = resData[i].location;
                     if(!(location in elementNoteLocationsMap))
                         elementNoteLocationsMap[location] = {};
 
-                    elementNoteLocationsMap[location][data[i].name] = data[i];
+                    elementNoteLocationsMap[location][resData[i].name] = resData[i];
                 } 
 
                 let 
@@ -92,63 +64,47 @@ function AddElementNote(){
                 setCKEditorContent(firstNotableElementData.note);
             }
         }catch(err){
-            setErr(err.message);
+             
         }
     },[]);
 
     const saveElementNoteHandler = useCallback(async () => {
 
-        pageSpinnerDisplay('show');
 
         let validationErrs = [];
 
         if(!ckEditorContent)
             validationErrs.push('note');
 
-        if(validationErrs.length){
-            pageSpinnerDisplay('hide');
+        if(validationErrs.length)
             return;
-        }
 
-        const httpAbortCtrl = new AbortController;
-        activeHttpReqs.current.push(httpAbortCtrl);
         try{
-            const res = await fetch('http://localhost:5000/api/elements-notes/',{
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+            const resData = await sendRequest(
+                'http://localhost:5000/api/elements-notes/',
+                'PATCH',
+                undefined,
+                JSON.stringify({
                     elementNoteLocation: selectedNotableElementData.location,
                     elementNoteName: selectedNotableElementData.name,
                     note: ckEditorContent,
-                }),
-                signal: httpAbortCtrl.signal,
-            });
+                })
+            );
 
-            const data = await res.json();
-
-            notableElementsDatas[selectedNotableElementData.location][selectedNotableElementData.name] = data; // تحقیق شود که آیا این کار صحیح است؟
+            notableElementsDatas[selectedNotableElementData.location][selectedNotableElementData.name] = resData; // تحقیق شود که آیا این کار صحیح است؟
         }catch(err){
-            setErr(err.message);
+       
         }
 
-        pageSpinnerDisplay('hide');
     },[selectedNotableElementData,ckEditorContent]);
 
     useEffect(() => {
         fetchElementsSpecsHandler();
     },[fetchElementsSpecsHandler]);
 
-    useEffect(() => {
-        return () => {
-            activeHttpReqs.current.forEach(abortCtrl => abortCtrl.abort());
-        }
-    },[]);
-
     return (
         <div className="add-element-note-page p-3">
-            <div ref={pageSpinnerRef} className="modal-spinner-wrapper d-flex justify-content-center align-items-center visually-hidden">
+            <div className={'fixed spinner-wrapper d-flex justify-content-center align-items-center' + (isLoading ? '' : ' visually-hidden')}>
                 <div className="spinner-border text-primary" role="status"></div>
             </div> 
             <div className='page-title-box'>

@@ -1,39 +1,41 @@
-import React, {useState,useEffect,useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
+import { useHttpClient } from '../shared/hooks/http-hook';
 
 function AppInfo() {
 
-  const [appInfoPageContent,setAppInfoPageContent] = useState('');
+  const [appInfoPageContent, setAppInfoPageContent] = useState('');
+
+  const {isLoading, sendRequest} = useHttpClient();
 
   const fetchElementDataHandler = useCallback(async () => {
 
     try{
-        const response = await fetch('http://localhost:5000/api/elements-notes/',{
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({
-                elementNoteLocation: 'app-info-page',
-                elementNoteName: 'app-info-page',
-            }),
-        });
+        const resData = await sendRequest(
+            'http://localhost:5000/api/elements-notes/',
+            'POST',
+            undefined,
+            JSON.stringify({
+                  elementNoteLocation: 'app-info-page',
+                  elementNoteName: 'app-info-page',
+            })
+        );
 
-        const data = await response.json();
-        if(!response.ok)
-            throw new Error(data.message);
-
-        setAppInfoPageContent(data.note);
+        setAppInfoPageContent(resData.note);
     }catch(err){
-        console.log(err);
+
     }
   },[]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchElementDataHandler();
   },[]);
   
   return (
     <div className='add-scope-page p-3'>   
+        <div className={'spinner-wrapper d-flex justify-content-center align-items-center' + (isLoading ? '' : ' visually-hidden')}>
+          <div className="spinner-border text-primary" role="status"></div>
+        </div> 
         <div className='page-title-box'>
           <h4 className='inline page-title'>
               App Info

@@ -1,32 +1,10 @@
-import React , {useState,useCallback,useEffect} from 'react';
+import React , { useState, useCallback, useEffect } from 'react';
 
 import { Pencil,Trash } from 'react-bootstrap-icons';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
-function createRandomNum(min, max) {  
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}  
-
-function confirmDel(){
-    let 
-        randomNum = createRandomNum(10,90),
-        confirmDelPromptResult 
-    ;
-
-    confirmDelPromptResult = prompt(`جهت تایید حذف کردن، عدد  ${randomNum} را وارد ورودی ذیل نمایید`);
-
-    if(confirmDelPromptResult === null)
-        return false;
-    else if(confirmDelPromptResult.trim() === ''){
-        alert('عددی را وارد ننموده اید.');
-        return false;
-    }else if(randomNum != confirmDelPromptResult.trim()){
-        alert('عدد تایید حذف را اشتباه وارد نموده اید.');
-        return false;
-    }else
-        return true;
-}
+import { confirmDel } from '../shared/funcs/ConfirmDel';
 
 function delBtnOnClickHandler(){
     if(confirmDel()){

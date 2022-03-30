@@ -39,6 +39,8 @@ export const useHttpClient = () => {
                 if(!res.ok)
                     throw new Error(resData.message);
 
+                // throw new Error('this is an err just for testing.');
+
                 setIsLoading(false);
                 return resData;
             }catch(err){

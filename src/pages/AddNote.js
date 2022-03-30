@@ -1,11 +1,17 @@
-import React , {useState,useEffect,useCallback,useRef} from 'react';
+import React , { useState, useEffect, useCallback } from 'react';
+
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
+import { useHttpClient } from '../shared/hooks/http-hook';
+
 function AddNote(){
     
+    // use useReducer (two many compount & related states are sperate)
+
     const [scopeDatas, setScopeData] = useState([]);
     const [title, setTitle] = useState('');
     const [type, setType] = useState(0);
@@ -19,8 +25,8 @@ function AddNote(){
     const [srcURL, setSrcURL] = useState('');
     const [srcURLIsValid, setSRCURLIsValid] = useState(true);
     const [ckEditorContent, setCKEditorContent] = useState('');
-    const [isAddBtnSpinnerDisplayed, setAddBtnSpinnerDisplay] = useState(false);
-    const [err, setErr] = useState(null);
+
+    const {isLoading, sendRequest} = useHttpClient();
 
     const srcTypes = [
         {
@@ -64,8 +70,6 @@ function AddNote(){
             },
         },
     ];
-
-    const activeHttpReqs = useRef([]);
 
     function noteTypeOnChangeHandler(e){
         setType(+e.target.getAttribute('data-val'));
@@ -121,28 +125,17 @@ function AddNote(){
     const fetchScopesHandler = useCallback(async () => {
 
         try{
-            const response = await fetch('http://localhost:5000/api/scopes',{
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            });
+            const resData = await sendRequest('http://localhost:5000/api/scopes');
 
-            const data = await response.json();
-            if(!response.ok)
-                throw new Error(data.message);  
-
-            setScopeData(data);
-            if(data.length)
-                setSelectedScopeId(data[0]._id);
+            setScopeData(resData);
+            if(resData.length)
+                setSelectedScopeId(resData[0]._id);
         }catch(err){
-            setErr(err.message);
+
         }
     },[]);
 
     async function addNoteHandler(){
- 
-        setAddBtnSpinnerDisplay(true);
 
         let validationErrs = [];
    
@@ -169,20 +162,15 @@ function AddNote(){
             }
         }
  
-        if(validationErrs.length){
-            setAddBtnSpinnerDisplay(false);
+        if(validationErrs.length)
             return;
-        }
  
         try{
-            // const httpAbortCtrl = new AbortController;
-            // httpAbortCtrl.current.push(httpAbortCtrl);
-            await fetch('http://localhost:5000/api/notes',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(function(){
+            await sendRequest(
+                'http://localhost:5000/api/notes',
+                'POST',
+                undefined,
+                JSON.stringify(function(){
                     let paramsObj = {
                         scopeId: selectedScopeId,
                         sourceTypeId: selectedSrcTypeId,
@@ -198,9 +186,8 @@ function AddNote(){
                         paramsObj.sourceName = sourceName;
 
                     return paramsObj;
-                }()),
-                // signal: httpAbortCtrl.signal
-            });
+                }())
+            );
 
             (function ResetAllELements(){
                 setTitle('');
@@ -210,10 +197,8 @@ function AddNote(){
                 setCKEditorContent('');
             })();
         }catch(err){
-            setErr(err.message);
+ 
         }
-
-        setAddBtnSpinnerDisplay(false);
     }
 
     useEffect(() => {
@@ -223,6 +208,9 @@ function AddNote(){
 
     return (
         <div className="add-note-page p-3">
+            <div className={'fixed spinner-wrapper d-flex justify-content-center align-items-center' + (isLoading ? '' : ' visually-hidden')}>
+                <div className="spinner-border text-primary" role="status"></div>
+            </div> 
             <div className='page-title-box'>
                 <h4 className='inline page-title'>
                     Add Note
@@ -317,7 +305,6 @@ function AddNote(){
                     />
                 </div>
                 <button type="button" className="add-btn btn btn-primary" onClick={addNoteHandler}>
-                    <span className={'spinner-border spinner-border-sm' + (isAddBtnSpinnerDisplayed ? '' : ' visually-hidden')} role="status" aria-hidden="true"></span>
                     Add
                 </button>
             </div>

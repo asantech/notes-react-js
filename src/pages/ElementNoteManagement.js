@@ -1,34 +1,12 @@
-import React , {useState, useEffect, useCallback} from 'react';
+import React , { useState, useEffect, useCallback } from 'react';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
-import {useHttpClient} from '../shared/hooks/http-hook';
+import { useHttpClient } from '../shared/hooks/http-hook';
 
-function extractTextFromHTMLStr(htmlStr) {
-    var tmpDiv = document.createElement('div');
-    tmpDiv.innerHTML = htmlStr;
-    return tmpDiv.textContent || tmpDiv.innerText;
-};
+import { extractTextFromHTMLStr } from '../shared/funcs/ExtractTxtFromHTML';
 
-function countWords(str) {
-    return (
-        str
-            .replace(/(^\s*)|(\s*$)/gi,'')
-            .replace(/[ ]{2,}/gi,' ')
-            .replace(/\n /,'\n')
-            .split(' ')
-            .length
-    );
-};
-
-function getWordsCount(str) {                            
-    return (
-        str
-            .split(' ')
-            .filter(n => n != '')
-            .length
-    );
-}
+import { getWordsCount } from '../shared/funcs/GetWordsCount';
 
 function ElementNoteManagement(){
 

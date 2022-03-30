@@ -1,4 +1,4 @@
-import React, { useContext,Component, Fragment, useState, useCallback} from 'react';
+import React, { useContext, Fragment, useState, useCallback } from 'react';
 
 import ReactDOM from 'react-dom';
 
@@ -6,9 +6,11 @@ import { Link } from 'react-router-dom';
 
 import AuthContext from '../contexts/auth-context';
 
+import { useHttpClient } from '../shared/hooks/http-hook';
+ 
 import ReactTooltip from 'react-tooltip';
 
-import { Button, Modal, Toast } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import { HouseDoorFill, Plus, CardText, BoxArrowInRight, Gear ,InfoCircle ,JournalText, FolderPlus, Folder, Diagram3, PersonPlusFill, PersonCircle} from 'react-bootstrap-icons';
 
@@ -18,13 +20,13 @@ function Nav(props){
 
     let
         selectedLang = props.selectedLang,
-        setLang = props.setLang,
-        settingsModal
+        setLang = props.setLang
     ;
 
     const authContext = useContext(AuthContext);
     const [showSettingsModal, setSettingsModalDisplay] = useState(false);
-    const [err, setErr] = useState(null);
+
+    const {isLoading, sendRequest} = useHttpClient()
 
     function changeLangHandler(){
         if(selectedLang === 'en')
@@ -33,103 +35,22 @@ function Nav(props){
             setLang('en');
     }
 
-    function CreateToast() {
-        const [toastIsShown, setToastIsShown] = useState(false);
-      
-        function toastOnCloseHandler(){
-            setToastIsShown(false);
-        }
-      
-        return (
-            <Toast show={toastIsShown} onClose={toastOnCloseHandler}>
-                <Toast.Body>
-                   This is an err
-                </Toast.Body>
-            </Toast>
-        );
-    }
-
-    class SettingsModalClassComponent extends Component{
-
-        constructor(){
-            super();
-            this.state = {
-                isShown: false,
-            };
-        }
-
-        handleModalDisplay() {
-            this.setState({ isShown: !this.state.isShown });
-        }
-
-        render (){
-            return (
-                <Modal show={this.state.isShown} >
-                    <Modal.Header closeButton>
-                    <   Modal.Title>Modal heading</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        Woohoo, you're reading this text in a modal!
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleModalDisplay}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                // <div className="modal" show={true} tabindex="-1">
-                //     <div className="modal-dialog">
-                //         <div className="modal-content">
-                //         <div className="modal-header">
-                //             <h5 className="modal-title">Modal title</h5>
-                //             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                //         </div>
-                //         <div className="modal-body">
-                //             <p>Modal body text goes here.</p>
-                //         </div>
-                //         <div className="modal-footer">
-                //             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                //             <button type="button" className="btn btn-primary">Save changes</button>
-                //         </div>
-                //         </div>
-                //     </div>
-                // </div>
-            );
-        }
-    }
-
     function SettingsModal( ) {
 
         const handleClose = () => setSettingsModalDisplay(false);
         const [serverCodeStructure, setServerCodeStructure] = useState();
-        const [spinnerIsShown, setSpinnerIsShown] = useState(false);
 
         const fetchServerCodeTypeHandler = useCallback(async () => {
 
-            setSpinnerIsShown(true);
             try{
-                const response = await fetch('http://localhost:5000/api/server-code-structure',{
-                    method: 'GET',
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                });
+                const resData = await sendRequest('http://localhost:5000/api/server-code-structure');
     
-                const data = await response.json();
-                if(!response.ok)
-                    throw new Error(data.message);
-                // throw new Error('this is an err just for testing.');
-                setServerCodeStructure(data[0].structure);
-                setSpinnerIsShown(false);
+                setServerCodeStructure(resData[0].structure);
+ 
             }catch(err){
-                setSpinnerIsShown(false);
-                // ReactDOM.createPortal(
-                //     <CreateToast/>,
-                //     document.getElementById('toasts-container-root')
-                // );
+ 
             }
-        },[]);
+        },[showSettingsModal,setSettingsModalDisplay,setServerCodeStructure]);
 
         function onEnterHandler(){
             fetchServerCodeTypeHandler();
@@ -142,21 +63,19 @@ function Nav(props){
         async function saveSettingsHandler(e){
      
             try{
-                await fetch('http://localhost:5000/api/server-code-structure',{
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
+                await sendRequest(
+                    'http://localhost:5000/api/server-code-structure',
+                    'POST',
+                    undefined,
+                    JSON.stringify({
                         structure: serverCodeStructure,
                     }),
-                });
+                );
     
-                handleClose();
             }catch(err){
-                setErr(err.message);
-                handleClose();
+
             }
+            handleClose();
         }
 
         function saveBtnOnClickHandler(){
@@ -177,7 +96,7 @@ function Nav(props){
                 onHide={handleClose}
                 onEnter={onEnterHandler}
             >
-                <div className={'modal-spinner-wrapper d-flex justify-content-center align-items-center' +(spinnerIsShown ? '' : ' visually-hidden')}>
+                <div className={'spinner-wrapper d-flex justify-content-center align-items-center' +(isLoading ? '' : ' visually-hidden')}>
                     <div className="spinner-border text-info" role="status"></div>
                     <span>Loading...</span>
                 </div>
@@ -251,8 +170,6 @@ function Nav(props){
     }
 
     function exitBtnOnClickHandler(){
-        // localStorage.removeItem('userIsSignedIn');
-        // authContext.setUserIsSignedIn(false);
         authContext.signOutHandler();
     }
  
