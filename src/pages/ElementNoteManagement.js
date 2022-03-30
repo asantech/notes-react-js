@@ -33,50 +33,15 @@ function getWordsCount(str) {
 function ElementNoteManagement(){
 
     const [elementsNotesDatas, setElementsNotesDatas] = useState([]);
-    const [isLoadingMsg, setLoadingMsg] = useState(false);
-    // const [err, setErr] = useState(null);
-
     const {isLoading, err, sendRequest, clearErr} = useHttpClient();
-    // const fetchElementsNotesHandler = useCallback(async () => {
 
-    //     setLoadingMsg(true);
-    //     setErr(null);
-
-    //     try{
-    //         const response = await fetch('http://localhost:5000/api/elements-notes/',{
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-type': 'application/json',
-    //             },
-    //         });
-
-    //         const data = await response.json();
-    //         if(!response.ok)
-    //             throw new Error(data.message); // آیا throw بماند؟
-
-    //         const elementsNotesDatasArray = [];
-
-    //         for(const id in data)
-    //             elementsNotesDatasArray.push(data[id]);
-
-    //         setElementsNotesDatas(elementsNotesDatasArray);
-    //         setLoadingMsg(false);
-    //     }catch(err){
-    //         setLoadingMsg(false);
-    //         setErr(err.message);
-    //     }
-    // },[]);
+    let content;
 
     const fetchElementsNotesHandler = useCallback(async () => {
 
         try{
-            const responseData = await sendRequest(
-                'http://localhost:5000/api/elements-notes/',
-                'GET',
-                {
-                    'Content-type': 'application/json',
-                }
-            );
+            clearErr();
+            const responseData = await sendRequest('http://localhost:5000/api/elements-notes/');
 
             const elementsNotesDatasArray = [];
 
@@ -92,8 +57,6 @@ function ElementNoteManagement(){
     useEffect(() => {
         fetchElementsNotesHandler();
     },[fetchElementsNotesHandler]);
-
-    let content;
  
     if(elementsNotesDatas.length === 0)
         content = (
