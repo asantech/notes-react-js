@@ -143,32 +143,32 @@ function AddNote(){
 
     async function addNoteHandler(){
 
-        let validationErrs = [];
+        let validationErrsMsgs = [];
    
         if(!title.trim()){
-            validationErrs.push('title');
+            validationErrsMsgs.push('title is empty');
             setTitleIsValid(false);
         }
  
         if(!ckEditorContent){
-            validationErrs.push('note');
+            validationErrsMsgs.push('note is empty');
         }
  
         if(selectedSrcTypeIsURLType === 'true'){
             if(!srcURL){
-                validationErrs.push('srcURL');
+                validationErrsMsgs.push('srcURL is empty');
                 setSRCURLIsValid(false);
             }
         }
  
         if(srcHasName === 'true'){
             if(!sourceName){
-                validationErrs.push('sourceName');
+                validationErrsMsgs.push('sourceName is empty');
                 setSourceNameIsValid(false);
             }
         }
  
-        if(validationErrs.length)
+        if(validationErrsMsgs.length)
             return;
  
         try{

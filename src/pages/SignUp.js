@@ -12,6 +12,7 @@ function SignUp(props){
     let navigate = useNavigate();
     const usernameInputRef = useRef();
     const emailInputRef = useRef();
+    const cellphoneNumInputRef = useRef();
     const firstNameInputRef = useRef();
     const lastNameInputRef = useRef();
     const passwordInputRef = useRef();
@@ -23,7 +24,7 @@ function SignUp(props){
 
     const authContext = useContext(AuthContext);
  
-    function signInFormDimmerDisplay(val){
+    function signUpFormDimmerDisplay(val){
         if(arguments.length){
             if(val === 'show')
                 signUpFormSpinnerRef.current.classList.remove('visually-hidden');
@@ -36,12 +37,28 @@ function SignUp(props){
         return usernameInputRef.current.value;
     }
 
+    function firstNameInputVal(){
+        return firstNameInputRef.current.value;
+    }
+
+    function lastNameInputVal(){
+        return lastNameInputRef.current.value;
+    }
+
     function emailInputVal(){
         return emailInputRef.current.value;
     }
 
+    function cellphoneNumInputVal(){
+        return cellphoneNumInputRef.current.value;
+    }
+
     function passwordInputVal(){
         return passwordInputRef.current.value;
+    }
+
+    function passwordRepeatInputVal(){
+        return passwordRepeatInputRef.current.value;
     }
 
     function usernameInputIsEmptyMsgDisplay(val){
@@ -50,6 +67,24 @@ function SignUp(props){
                 usernameInputRef.current.classList.add('is-invalid');
             else if(val === 'hide')
                 usernameInputRef.current.classList.remove('is-invalid');
+        }
+    }
+
+    function firstNameInputIsEmptyMsgDisplay(val){
+        if(arguments.length){
+            if(val === 'show')
+                firstNameInputRef.current.classList.add('is-invalid');
+            else if(val === 'hide')
+                firstNameInputRef.current.classList.remove('is-invalid');
+        }
+    }
+
+    function lastNameInputIsEmptyMsgDisplay(val){
+        if(arguments.length){
+            if(val === 'show')
+                lastNameInputRef.current.classList.add('is-invalid');
+            else if(val === 'hide')
+                lastNameInputRef.current.classList.remove('is-invalid');
         }
     }
 
@@ -62,12 +97,30 @@ function SignUp(props){
         }
     }
 
+    function cellphoneNumInputIsEmptyMsgDisplay(val){
+        if(arguments.length){
+            if(val === 'show')
+                cellphoneNumInputRef.current.classList.add('is-invalid');
+            else if(val === 'hide')
+                cellphoneNumInputRef.current.classList.remove('is-invalid');
+        }
+    }
+
     function passwordInputIsEmptyMsgDisplay(val){
         if(arguments.length){
             if(val === 'show')
                 passwordInputRef.current.classList.add('is-invalid');
             else if(val === 'hide')
                 passwordInputRef.current.classList.remove('is-invalid');
+        }
+    }
+
+    function passwordRepeatInputIsEmptyMsgDisplay(val){
+        if(arguments.length){
+            if(val === 'show')
+                passwordRepeatInputRef.current.classList.add('is-invalid');
+            else if(val === 'hide')
+                passwordRepeatInputRef.current.classList.remove('is-invalid');
         }
     }
 
@@ -80,15 +133,15 @@ function SignUp(props){
     }
 
     function firstNameInputOnFocusHandler(){
-
+        firstNameInputIsEmptyMsgDisplay('hide');
     }
 
     function lastNameInputOnFocusHandler(){
-        
+        lastNameInputIsEmptyMsgDisplay('hide');
     }
 
-    function cellphoneInputOnFocusHandler(){
-
+    function cellphoneNumInputOnFocusHandler(){
+        cellphoneNumInputIsEmptyMsgDisplay('hide');
     }
 
     function passwordInputOnFocusHandler(){
@@ -96,36 +149,64 @@ function SignUp(props){
     }
 
     function passwordRepeatInputOnFocusHandler(){
-        
+        passwordRepeatInputIsEmptyMsgDisplay('hide');
     }
 
     function signUpMethodOnChangeHandler(e){
         setSignUpMethod(e.target.getAttribute('data-val'));
     }
 
-    async function signUpHandler(){
+    async function signUpBtnOnClickHandler(){
 
-        let invalidInputValsCount = 0;
-
+        let validationErrsMsgs = [];
+ 
         if(!usernameInputVal()){
+            validationErrsMsgs.push('username is empty');
             usernameInputIsEmptyMsgDisplay('show');
-            invalidInputValsCount++;
         }
 
-        if(!emailInputVal()){
-            emailInputIsEmptyMsgDisplay('show');
-            invalidInputValsCount++;
+        if(!firstNameInputVal()){
+            validationErrsMsgs.push('first name is empty');
+            firstNameInputIsEmptyMsgDisplay('show');
         }
 
+        if(!lastNameInputVal()){
+            validationErrsMsgs.push('last name is empty');
+            lastNameInputIsEmptyMsgDisplay('show');
+        }
+ 
+        if(
+            signUpMethod === 'email' ||
+            signUpMethod === 'both' 
+        )
+            if(!emailInputVal()){
+                validationErrsMsgs.push('email is empty');
+                emailInputIsEmptyMsgDisplay('show');
+            }
+
+        if(
+            signUpMethod === 'cellphone-num' ||
+            signUpMethod === 'both' 
+        )
+            if(!cellphoneNumInputVal()){
+                validationErrsMsgs.push('cellphone num is empty');
+                cellphoneNumInputIsEmptyMsgDisplay('show');
+            }
+ 
         if(!passwordInputVal()){
+            validationErrsMsgs.push('password is empty');
             passwordInputIsEmptyMsgDisplay('show');
-            invalidInputValsCount++;
         }
 
-        if(invalidInputValsCount)
+        if(!passwordRepeatInputVal()){
+            validationErrsMsgs.push('password repeat is empty');
+            passwordRepeatInputIsEmptyMsgDisplay('show');
+        }
+ 
+        if(validationErrsMsgs.length)
             return;
-        
-        signInFormDimmerDisplay('show');
+       
+        signUpFormDimmerDisplay('show');
 
         try{
             await sendRequest(
@@ -134,18 +215,18 @@ function SignUp(props){
                 undefined,
                 JSON.stringify({
                     username: usernameInputRef.current.value.trim(),
-                    // firstName: ,
-                    // lastName: ,
+                    firstName: firstNameInputRef.current.value.trim(),
+                    lastName: lastNameInputRef.current.value.trim(),
                     password: passwordInputRef.current.value.trim(),
+                    age: 32,
                 }),
             );
-
-            authContext.signInHandler();
  
-            signInFormDimmerDisplay('hide');
+            signUpFormDimmerDisplay('hide'); // بررسی شود که چرا پس از اجرا شدن authContext.signInHandler خطا می دهد که spinner وجود ندارد
+            authContext.signInHandler();
             navigate('../home', { replace: true });
         }catch(err){
-            signInFormDimmerDisplay('hide');
+            signUpFormDimmerDisplay('hide');
         }
     }
 
@@ -155,7 +236,7 @@ function SignUp(props){
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6" style={{position: 'relative'}}>
-                        <div ref={signUpFormSpinnerRef} className="modal-spinner-wrapper d-flex justify-content-center align-items-center visually-hidden">
+                        <div ref={signUpFormSpinnerRef} className="spinner-wrapper d-flex justify-content-center align-items-center visually-hidden">
                             <div className="spinner-border text-primary" role="status"></div>
                         </div>
 
@@ -167,8 +248,8 @@ function SignUp(props){
                                 </label>
                             </div>
                             <div className="form-check form-check-inline">
-                                <input id="sign-in-by-phone-number" className='form-check-input' type="radio" data-val="cellphone-number" name="sign-up-method" checked={signUpMethod === 'cellphone-number' ? 'checked' : ''} onChange={signUpMethodOnChangeHandler}/>
-                                <label className="form-check-label" htmlFor="sign-in-by-phone-number">
+                                <input id="sign-in-by-cellphone-num" className='form-check-input' type="radio" data-val="cellphone-num" name="sign-up-method" checked={signUpMethod === 'cellphone-num' ? 'checked' : ''} onChange={signUpMethodOnChangeHandler}/>
+                                <label className="form-check-label" htmlFor="sign-in-by-cellphone-num">
                                     Cellphone Number
                                 </label>
                             </div>    
@@ -212,9 +293,9 @@ function SignUp(props){
                                     Please enter email
                                 </div>
                             </div>
-                            <div className={'mb-3 ' + (signUpMethod === 'cellphone-number' || signUpMethod === 'both' ? '' : 'visually-hidden')}>
-                                <label htmlFor="cellphone-input" className="form-label">Cellphone Number</label>
-                                <input ref={emailInputRef} type="text" className="form-control" id="cellphone-input" placeholder="cellphone number" onFocus={cellphoneInputOnFocusHandler}/>
+                            <div className={'mb-3 ' + (signUpMethod === 'cellphone-num' || signUpMethod === 'both' ? '' : 'visually-hidden')}>
+                                <label htmlFor="cellphone-num-input" className="form-label">Cellphone Number</label>
+                                <input ref={cellphoneNumInputRef} type="text" className="form-control" id="cellphone-num-input" placeholder="cellphone number" onFocus={cellphoneNumInputOnFocusHandler}/>
                                 <div className="invalid-feedback">
                                     Please Cellphone Number
                                 </div>
@@ -237,7 +318,7 @@ function SignUp(props){
                                     Please enter password repeat
                                 </div>
                             </div>
-                            <button type="text" className="btn btn-primary" onClick={signUpHandler}>Sign in</button>
+                            <button type="text" className="btn btn-primary" onClick={signUpBtnOnClickHandler}>Sign Up</button>
                         </div>
                     </div>
                     <div className="col-3"></div>
