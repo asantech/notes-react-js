@@ -1,50 +1,47 @@
-import React , { useState, useEffect, useCallback } from 'react';
+import React , { useContext, useState, useEffect, useCallback, Fragment } from 'react';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
-import {Pencil,Trash } from 'react-bootstrap-icons';
+import { Pencil, Trash } from 'react-bootstrap-icons';
+
+import { useHttpClient } from '../shared/hooks/http-hook';
+
+import AuthContext from '../contexts/auth-context';
+
+import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
 function ScopesManagement(){
 
+    const authContext = useContext(AuthContext);
+
     const [scopeDatas, setScopeData] = useState([]);
-    const [isLoadingCards, setLoadingCards] = useState(false);
-    const [err, setErr] = useState(null);
+
+    const { isLoading, err, sendRequest, clearErr } = useHttpClient();
+
+    let content;
 
     const fetchScopesHandler = useCallback(async () => {
 
-        setLoadingCards(true);
-        setErr(null);
+        clearErr();
 
         try{
-            const response = await fetch('http://localhost:5000/api/scopes',{
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-            if(!response.ok)
-                throw new Error(data.message); // آیا throw بماند؟
+            const resData = await sendRequest('http://localhost:5000/api/scopes');
 
             const scopesArray = [];
 
-            for(const id in data)
-                scopesArray.push(data[id]);
+            for(const id in resData)
+                scopesArray.push(resData[id]);
 
             setScopeData(scopesArray);
-            setLoadingCards(false);
+
         }catch(err){
-            setLoadingCards(false);
-            setErr(err.message);
+
         }
     },[]);
 
     useEffect(() => {
         fetchScopesHandler();
     },[fetchScopesHandler]);
-
-    let content;
 
     if(scopeDatas.length === 0)
         content = (
@@ -84,37 +81,44 @@ function ScopesManagement(){
             <td colSpan="4">{err}</td>
         </tr>;
 
-    if(isLoadingCards)
+    if(isLoading)
         content = <tr>
             <td colSpan="4">Loading ...</td>
         </tr>;
 
     return (
-        <div className="scopes-management-page p-3">
-            <div className='page-title-box'>
-                <h4 className='inline page-title'>
-                    Scopes Management
-                </h4>
-                <NotableElementInfoIcon 
-                    elementLocation = 'scopes-management-page'
-                    elementName = 'scopes-management-page'
-                />
-            </div>
-            <div className="added-scopes-list-segment">
-                <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">R</th>
-                            <th scope="col">Name/Link</th>
-                            <th scope="col">Notes Count</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {content}
-                    </tbody>
-                </table>
-            </div>
+        <div className='scopes-management-page p-3'>
+            {
+                !authContext.userIsSignedIn ?
+                <PageUnaccessibilityMsg />
+                :
+                <Fragment>
+                    <div className='page-title-box'>
+                        <h4 className='inline page-title'>
+                            Scopes Management
+                        </h4>
+                        <NotableElementInfoIcon 
+                            elementLocation = 'scopes-management-page'
+                            elementName = 'scopes-management-page'
+                        />
+                    </div>
+                    <div className="added-scopes-list-segment">
+                        <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col">R</th>
+                                    <th scope="col">Name/Link</th>
+                                    <th scope="col">Notes Count</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {content}
+                            </tbody>
+                        </table>
+                    </div>
+                </Fragment>
+            }
         </div>
     ); 
 }

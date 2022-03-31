@@ -1,4 +1,4 @@
-import React , { useState, useEffect, useCallback } from 'react';
+import React , { useContext, useState, useEffect, useCallback , Fragment } from 'react';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
@@ -7,6 +7,10 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
+
+import AuthContext from '../contexts/auth-context';
+
+import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
 function AddNote(){
     
@@ -27,6 +31,8 @@ function AddNote(){
     const [ckEditorContent, setCKEditorContent] = useState('');
 
     const {isLoading, sendRequest} = useHttpClient();
+
+    const authContext = useContext(AuthContext);
 
     const srcTypes = [
         {
@@ -208,106 +214,113 @@ function AddNote(){
 
     return (
         <div className="add-note-page p-3">
-            <div className={'fixed spinner-wrapper d-flex justify-content-center align-items-center' + (isLoading ? '' : ' visually-hidden')}>
-                <div className="spinner-border text-primary" role="status"></div>
-            </div> 
-            <div className='page-title-box'>
-                <h4 className='inline page-title'>
-                    Add Note
-                </h4>
-                <NotableElementInfoIcon 
-                    elementLocation = 'add-note-page'
-                    elementName = 'add-note-page'
-                />
-            </div>
-            <div className="add-note-segment">
-                <div className="mb-3 col-md-7">
-                    <label className="form-label" htmlFor="title">Title</label>
-                    <input id="title" name="title" type="text" className={'form-control ' + (titleIsValid ? '' : 'is-invalid')} placeholder="title" onChange={titleInputOnChangeHandler} onFocus={titleInputFocusHandler} value={title} autoComplete='off'></input>
-                    <div className="invalid-feedback">
-                        Please enter note's title
+            {
+                !authContext.userIsSignedIn ?
+                <PageUnaccessibilityMsg/>
+                :
+                <Fragment>
+                    <div className={'fixed spinner-wrapper d-flex justify-content-center align-items-center' + (isLoading ? '' : ' visually-hidden')}>
+                        <div className="spinner-border text-primary" role="status"></div>
+                    </div> 
+                    <div className='page-title-box'>
+                        <h4 className='inline page-title'>
+                            Add Note
+                        </h4>
+                        <NotableElementInfoIcon 
+                            elementLocation = 'add-note-page'
+                            elementName = 'add-note-page'
+                        />
                     </div>
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Type</label>
-                    &nbsp;&nbsp;
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" data-val="0" name="note-type" id="note-type-public" checked={type === 0 ? 'checked' : ''} onChange={noteTypeOnChangeHandler}/>
-                        <label className="form-check-label" htmlFor="note-type-public">
-                            public
-                        </label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" data-val="1" name="note-type" id="note-type-private" checked={type === 1 ? 'checked' : ''} onChange={noteTypeOnChangeHandler}/>
-                        <label className="form-check-label" htmlFor="note-type-private">
-                            private
-                        </label>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="mb-3 col-md-2">
-                        <label className="form-label" htmlFor="Scope">Scope</label>
-                        <select className="form-select" aria-label="Default select example" onChange={scopeOnChangeHandler}>
-                            {
-                                scopeDatas.map((scope) => (
-                                    <option key={scope._id} value={scope._id}>{scope.name}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                    <div className="mb-3 col-md-2">
-                        <label className="form-label" htmlFor="source-type">SourceType</label>
-                        <select className="form-select" aria-label="Default select example" defaultValue={selectedSrcTypeId} onChange={sourceTypeOnChangeHandler}>
-                            {
-                                srcTypes.map((srcType) => (
-                                    <option key={srcType.id} value={srcType.id} data-data={JSON.stringify(srcType.data)}>{srcType.lbl}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div className={'mb-3 col-md-7' + (srcHasName === false ? ' visually-hidden' : '')}>
-                    <label className="form-label" htmlFor="source-name">Source's Name</label>
-                    <input id="source-name" name="source-name" type="text" className={'form-control ' + (sourceNameIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={bookNameInputOnChangeHandler} onFocus={bookNameInputFocusHandler} value={sourceName} autoComplete="off"></input>
-                    <div className="invalid-feedback">
-                        Please enter source's name
-                    </div>
-                </div>
-                <div className={'mb-3 col-md-7' + (selectedSrcTypeIsURLType === false ? ' visually-hidden' : '')}>
-                    <label className="form-label" htmlFor="source-url">Source URL</label>
-                    <input id="source-url" name="source-url" type="text" className={'form-control ' + (srcURLIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={srcURLInputOnChangeHandler} onFocus={srcURLInputFocusHandler} value={srcURL} autoComplete="off"></input>
-                    <div className="invalid-feedback">
-                        Please enter note's source URL
-                    </div>
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Content</label>
-                    <CKEditor
-                        onReady={ editor => {
+                    <div className="add-note-segment">
+                        <div className="mb-3 col-md-7">
+                            <label className="form-label" htmlFor="title">Title</label>
+                            <input id="title" name="title" type="text" className={'form-control ' + (titleIsValid ? '' : 'is-invalid')} placeholder="title" onChange={titleInputOnChangeHandler} onFocus={titleInputFocusHandler} value={title} autoComplete='off'></input>
+                            <div className="invalid-feedback">
+                                Please enter note's title
+                            </div>
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Type</label>
+                            &nbsp;&nbsp;
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" data-val="0" name="note-type" id="note-type-public" checked={type === 0 ? 'checked' : ''} onChange={noteTypeOnChangeHandler}/>
+                                <label className="form-check-label" htmlFor="note-type-public">
+                                    public
+                                </label>
+                            </div>
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" data-val="1" name="note-type" id="note-type-private" checked={type === 1 ? 'checked' : ''} onChange={noteTypeOnChangeHandler}/>
+                                <label className="form-check-label" htmlFor="note-type-private">
+                                    private
+                                </label>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="mb-3 col-md-2">
+                                <label className="form-label" htmlFor="Scope">Scope</label>
+                                <select className="form-select" aria-label="Default select example" onChange={scopeOnChangeHandler}>
+                                    {
+                                        scopeDatas.map((scope) => (
+                                            <option key={scope._id} value={scope._id}>{scope.name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                            <div className="mb-3 col-md-2">
+                                <label className="form-label" htmlFor="source-type">SourceType</label>
+                                <select className="form-select" aria-label="Default select example" defaultValue={selectedSrcTypeId} onChange={sourceTypeOnChangeHandler}>
+                                    {
+                                        srcTypes.map((srcType) => (
+                                            <option key={srcType.id} value={srcType.id} data-data={JSON.stringify(srcType.data)}>{srcType.lbl}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div className={'mb-3 col-md-7' + (srcHasName === false ? ' visually-hidden' : '')}>
+                            <label className="form-label" htmlFor="source-name">Source's Name</label>
+                            <input id="source-name" name="source-name" type="text" className={'form-control ' + (sourceNameIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={bookNameInputOnChangeHandler} onFocus={bookNameInputFocusHandler} value={sourceName} autoComplete="off"></input>
+                            <div className="invalid-feedback">
+                                Please enter source's name
+                            </div>
+                        </div>
+                        <div className={'mb-3 col-md-7' + (selectedSrcTypeIsURLType === false ? ' visually-hidden' : '')}>
+                            <label className="form-label" htmlFor="source-url">Source URL</label>
+                            <input id="source-url" name="source-url" type="text" className={'form-control ' + (srcURLIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={srcURLInputOnChangeHandler} onFocus={srcURLInputFocusHandler} value={srcURL} autoComplete="off"></input>
+                            <div className="invalid-feedback">
+                                Please enter note's source URL
+                            </div>
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Content</label>
+                            <CKEditor
+                                onReady={ editor => {
 
-                            if(editor)
-                                editor.ui.getEditableElement().parentElement.insertBefore(
-                                    editor.ui.view.toolbar.element,
-                                    editor.ui.getEditableElement()
-                                );
+                                    if(editor)
+                                        editor.ui.getEditableElement().parentElement.insertBefore(
+                                            editor.ui.view.toolbar.element,
+                                            editor.ui.getEditableElement()
+                                        );
 
-                            // this.editor = editor; // علت خطا دادن بررسی شود
-                        } }
-                        onError={({willEditorRestart}) => {
-                            if (willEditorRestart)
-                                this.editor.ui.view.toolbar.element.remove();
-                        }}
-                        onBlur = {(evt,editor) => {
-                            setCKEditorContent(editor.getData());   
-                        }}
-                        data = {ckEditorContent}
-                        editor={ DecoupledEditor }
-                    />
-                </div>
-                <button type="button" className="add-btn btn btn-primary" onClick={addNoteHandler}>
-                    Add
-                </button>
-            </div>
+                                    // this.editor = editor; // علت خطا دادن بررسی شود
+                                } }
+                                onError={({willEditorRestart}) => {
+                                    if (willEditorRestart)
+                                        this.editor.ui.view.toolbar.element.remove();
+                                }}
+                                onBlur = {(evt,editor) => {
+                                    setCKEditorContent(editor.getData());   
+                                }}
+                                data = {ckEditorContent}
+                                editor={ DecoupledEditor }
+                            />
+                        </div>
+                        <button type="button" className="add-btn btn btn-primary" onClick={addNoteHandler}>
+                            Add
+                        </button>
+                    </div>
+                </Fragment>
+            }
         </div>
     ); 
 }

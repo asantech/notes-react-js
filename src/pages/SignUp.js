@@ -1,17 +1,27 @@
-import React, {useState, useRef} from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
+
+import { useHttpClient } from '../shared/hooks/http-hook';
+
+import AuthContext from '../contexts/auth-context';
 
 function SignUp(props){
 
     let navigate = useNavigate();
     const usernameInputRef = useRef();
     const emailInputRef = useRef();
+    const firstNameInputRef = useRef();
+    const lastNameInputRef = useRef();
     const passwordInputRef = useRef();
     const passwordRepeatInputRef = useRef();
     const signUpFormSpinnerRef = useRef();
     const [signUpMethod,setSignUpMethod] = useState('email');
+
+    const { sendRequest } = useHttpClient();
+
+    const authContext = useContext(AuthContext);
  
     function signInFormDimmerDisplay(val){
         if(arguments.length){
@@ -69,7 +79,15 @@ function SignUp(props){
         emailInputIsEmptyMsgDisplay('hide');
     }
 
-    function mobilePhoneInputOnFocusHandler(){
+    function firstNameInputOnFocusHandler(){
+
+    }
+
+    function lastNameInputOnFocusHandler(){
+        
+    }
+
+    function cellphoneInputOnFocusHandler(){
 
     }
 
@@ -110,29 +128,23 @@ function SignUp(props){
         signInFormDimmerDisplay('show');
 
         try{
-            const response = await fetch('http://localhost:5000/api/users',{
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: JSON.stringify({
+            await sendRequest(
+                'http://localhost:5000/api/users/sign-up',
+                'POST',
+                undefined,
+                JSON.stringify({
                     username: usernameInputRef.current.value.trim(),
+                    // firstName: ,
+                    // lastName: ,
                     password: passwordInputRef.current.value.trim(),
                 }),
-            });
+            );
 
-            const data = await response.json();
-            if(!response.ok)
-                throw new Error(data.message);
-
-            localStorage.setItem('userIsSignedIn','1');
-            props.setUserIsSignedIn(true);
-            usernameInputRef.current.value = '';
-            passwordInputRef.current.value = '';
+            authContext.signInHandler();
+ 
             signInFormDimmerDisplay('hide');
             navigate('../home', { replace: true });
         }catch(err){
-            console.log('err',err);
             signInFormDimmerDisplay('hide');
         }
     }
@@ -147,7 +159,7 @@ function SignUp(props){
                             <div className="spinner-border text-primary" role="status"></div>
                         </div>
 
-                        <div>
+                        <div className='mb-2'>
                             <div className="form-check form-check-inline">
                                 <input id="sign-up-by-email" className='form-check-input' type="radio" data-val="email" name="sign-up-method" checked={signUpMethod === 'email' ? 'checked' : ''} onChange={signUpMethodOnChangeHandler}/>
                                 <label className="form-check-label" htmlFor="sign-up-by-email">
@@ -179,6 +191,20 @@ function SignUp(props){
                                     Please enter username
                                 </div>
                             </div>
+                            <div className='mb-3'>
+                                <label htmlFor="first-name-input" className="form-label">First Name</label>
+                                <input ref={firstNameInputRef} type="text" className="form-control" id="first-name-input" placeholder="first name" onFocus={firstNameInputOnFocusHandler}/>
+                                <div className="invalid-feedback">
+                                    Please enter first name
+                                </div>
+                            </div>
+                            <div className='mb-3'>
+                                <label htmlFor="last-name-input" className="form-label">Last Name</label>
+                                <input ref={lastNameInputRef} type="text" className="form-control" id="last-name-input" placeholder="last name" onFocus={lastNameInputOnFocusHandler}/>
+                                <div className="invalid-feedback">
+                                    Please enter last name
+                                </div>
+                            </div>
                             <div className={'mb-3 ' + (signUpMethod === 'email' || signUpMethod === 'both' ? '' : 'visually-hidden')}>
                                 <label htmlFor="email-input" className="form-label">Email</label>
                                 <input ref={emailInputRef} type="email" className="form-control" id="email-input" placeholder="name@example.com" onFocus={emailInputOnFocusHandler}/>
@@ -187,8 +213,8 @@ function SignUp(props){
                                 </div>
                             </div>
                             <div className={'mb-3 ' + (signUpMethod === 'cellphone-number' || signUpMethod === 'both' ? '' : 'visually-hidden')}>
-                                <label htmlFor="cellphone-number-input" className="form-label">Cellphone Number</label>
-                                <input ref={emailInputRef} type="text" className="form-control" id="cellphone-number-input" placeholder="cellphone number" onFocus={mobilePhoneInputOnFocusHandler}/>
+                                <label htmlFor="cellphone-input" className="form-label">Cellphone Number</label>
+                                <input ref={emailInputRef} type="text" className="form-control" id="cellphone-input" placeholder="cellphone number" onFocus={cellphoneInputOnFocusHandler}/>
                                 <div className="invalid-feedback">
                                     Please Cellphone Number
                                 </div>

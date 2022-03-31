@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useContext, useState, useEffect, useCallback, Fragment } from 'react';
 
 import ScopeCard from '../components/cards/ScopeCard';
 
@@ -6,12 +6,18 @@ import { useHttpClient } from '../shared/hooks/http-hook';
 
 import './Home.css';
 
+import AuthContext from '../contexts/auth-context';
+
+import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
+
 function Home(){
+
+    const authContext = useContext(AuthContext);
+
+    const {sendRequest, err, clearErr} = useHttpClient();
 
     const [scopeDatas, setScopeData] = useState([]);
     const [isLoadingCards, setLoadingCards] = useState(false);
-
-    const {sendRequest, err, clearErr} = useHttpClient();
 
     const fetchScopesHandler = useCallback(async () => {
 
@@ -49,13 +55,20 @@ function Home(){
 
     return (
         <div className="home-page p-3">
-            <div className="row row-cols-2">
-                <div className="subject-cards-segment col col-md-6">
-                    <div className="subject-cards-container">
-                        {content}
+            {
+                !authContext.userIsSignedIn ?
+                <PageUnaccessibilityMsg/>
+                :
+                <Fragment>
+                    <div className="row row-cols-2">
+                        <div className="subject-cards-segment col col-md-6">
+                            <div className="subject-cards-container">
+                                {content}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </Fragment>
+            }
         </div>
     ); 
 }

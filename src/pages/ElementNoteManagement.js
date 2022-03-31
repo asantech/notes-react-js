@@ -1,4 +1,4 @@
-import React , { useState, useEffect, useCallback } from 'react';
+import React , { useContext, useState, useEffect, useCallback, Fragment } from 'react';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
@@ -8,23 +8,29 @@ import { extractTextFromHTMLStr } from '../shared/funcs/ExtractTxtFromHTML';
 
 import { getWordsCount } from '../shared/funcs/GetWordsCount';
 
+import AuthContext from '../contexts/auth-context';
+
+import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
+
 function ElementNoteManagement(){
 
     const [elementsNotesDatas, setElementsNotesDatas] = useState([]);
     const {isLoading, err, sendRequest, clearErr} = useHttpClient();
 
+    const authContext = useContext(AuthContext);
+
     let content;
 
     const fetchElementsNotesHandler = useCallback(async () => {
 
+        clearErr();
         try{
-            clearErr();
-            const responseData = await sendRequest('http://localhost:5000/api/elements-notes/');
+            const resData = await sendRequest('http://localhost:5000/api/elements-notes/');
 
             const elementsNotesDatasArray = [];
 
-            for(const id in responseData)
-                elementsNotesDatasArray.push(responseData[id]);
+            for(const id in resData)
+                elementsNotesDatasArray.push(resData[id]);
 
             setElementsNotesDatas(elementsNotesDatasArray);
         }catch(err){
@@ -77,30 +83,37 @@ function ElementNoteManagement(){
 
     return (
         <div className="notable-elements-management-page p-3">
-            <div className="page-title-box">
-                <h4 className='inline page-title'>
-                    Element Note Management
-                </h4>
-                <NotableElementInfoIcon 
-                    elementLocation = 'element-note-management-page'
-                    elementName = 'element-note-management-page'
-                />
-            </div>
-            <div className="notable-elements-list-segment">
-                <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col" className="text-center">R</th>
-                            <th scope="col">Location</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Words Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {content}
-                    </tbody>
-                </table>
-            </div>
+            {
+                !authContext.userIsSignedIn ?
+                <PageUnaccessibilityMsg/>
+                :
+                <Fragment>
+                    <div className="page-title-box">
+                        <h4 className='inline page-title'>
+                            Element Note Management
+                        </h4>
+                        <NotableElementInfoIcon 
+                            elementLocation = 'element-note-management-page'
+                            elementName = 'element-note-management-page'
+                        />
+                    </div>
+                    <div className="notable-elements-list-segment">
+                        <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col" className="text-center">R</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Words Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {content}
+                            </tbody>
+                        </table>
+                    </div>
+                </Fragment>
+            }
         </div>
     ); 
 }

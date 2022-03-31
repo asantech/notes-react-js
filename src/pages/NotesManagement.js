@@ -1,10 +1,16 @@
-import React , { useState, useCallback, useEffect } from 'react';
+import React , { useContext, useState, useCallback, useEffect, Fragment} from 'react';
 
 import { Pencil,Trash } from 'react-bootstrap-icons';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { confirmDel } from '../shared/funcs/ConfirmDel';
+
+import AuthContext from '../contexts/auth-context';
+
+import { useHttpClient } from '../shared/hooks/http-hook';
+
+import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
 function delBtnOnClickHandler(){
     if(confirmDel()){
@@ -14,32 +20,22 @@ function delBtnOnClickHandler(){
 
 function NotesManagement(){
 
+    const authContext = useContext(AuthContext);
+  
+    const {isLoading, sendRequest, err, clearErr} = useHttpClient();
+
     const [notesDatas, setNotesDatas] = useState([]);
-    const [isLoadingCards, setLoadingCards] = useState(false);
-    const [err, setErr] = useState(null);
 
     const fetchNotesHandler = useCallback(async () => {
 
-        setLoadingCards(true);
-        setErr(null);
+        clearErr();
 
         try{
-            const response = await fetch('http://localhost:5000/api/notes',{
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            });
+            const resData = await sendRequest('http://localhost:5000/api/notes');
 
-            const data = await response.json();
-            if(!response.ok)
-                throw new Error(data.message); // آیا throw بماند؟
-
-            setNotesDatas(data);
-            setLoadingCards(false);
+            setNotesDatas(resData);
         }catch(err){
-            setLoadingCards(false);
-            setErr(err.message);
+  
         }
     },[]);
 
@@ -84,36 +80,43 @@ function NotesManagement(){
             <td colSpan="4">{err}</td>
         </tr>;
 
-    if(isLoadingCards)
+    if(isLoading)
         content = <tr>
             <td colSpan="4">Loading ...</td>
         </tr>;
 
     return (
         <div className="notes-management-page p-3">
-            <div className='page-title-box'>
-                <h4 className='inline page-title'>
-                    Notes Management
-                </h4>
-                <NotableElementInfoIcon 
-                    elementLocation = 'notes-management-page'
-                    elementName = 'notes-management-page'
-                />
-            </div>    
-            <div className="notes-list-segment">
-                <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
-                    <thead>
-                        <tr>
-                            <th className="col">R</th>
-                            <th className="col">Note Title</th>
-                            <th className="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {content}
-                    </tbody>
-                </table>
-            </div>
+            {
+                !authContext.userIsSignedIn ?
+                <PageUnaccessibilityMsg/>
+                :
+                <Fragment>
+                    <div className='page-title-box'>
+                        <h4 className='inline page-title'>
+                            Notes Management
+                        </h4>
+                        <NotableElementInfoIcon 
+                            elementLocation = 'notes-management-page'
+                            elementName = 'notes-management-page'
+                        />
+                    </div>    
+                    <div className="notes-list-segment">
+                        <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">
+                            <thead>
+                                <tr>
+                                    <th className="col">R</th>
+                                    <th className="col">Note Title</th>
+                                    <th className="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {content}
+                            </tbody>
+                        </table>
+                    </div>
+                </Fragment>
+            }
         </div>
     ); 
 }

@@ -6,25 +6,19 @@ import AuthContext from '../contexts/auth-context';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
+import { useHttpClient } from '../shared/hooks/http-hook';
+
 function SignIn(){
 
     const authContext = useContext(AuthContext);
 
+    const { isLoading , sendRequest } = useHttpClient();
+
     let navigate = useNavigate();
-    const signInFormSpinnerRef = useRef();
     const usernameInputRef = useRef();
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
     const [signInMethod,setSignInMethod] = useState('username');
- 
-    function signInFormDimmerDisplay(val){
-        if(arguments.length){
-            if(val === 'show')
-                signInFormSpinnerRef.current.classList.remove('visually-hidden');
-            else if(val === 'hide')
-                signInFormSpinnerRef.current.classList.add('visually-hidden');
-        }
-    }
 
     function signInMethodOnChangeHandler(e){
         setSignInMethod(e.target.getAttribute('data-val'));
@@ -81,7 +75,7 @@ function SignIn(){
         passwordInputIsEmptyMsgDisplay('hide');
     }
 
-    async function signInBtnOnClickHandler(){
+    async function signInBtnOnClickHandler(){ // بررسی شود که آیا از useCallback استفاده شود؟
 
         let invalidInputValsCount = 0;
 
@@ -108,33 +102,23 @@ function SignIn(){
 
         if(invalidInputValsCount)
             return;
-        
-        signInFormDimmerDisplay('show');
 
         try{
-            const response = await fetch('http://localhost:5000/api/users',{
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: JSON.stringify({
+            await sendRequest(
+                'http://localhost:5000/api/users',
+                'POST',
+                undefined,
+                JSON.stringify({
                     username: usernameInputRef.current.value.trim(),
                     password: passwordInputRef.current.value.trim(),
                 }),
-            });
-
-            const data = await response.json();
-            if(!response.ok)
-                throw new Error(data.message);
+            );
 
             authContext.signInHandler();
-            usernameInputRef.current.value = '';
-            passwordInputRef.current.value = '';
-            signInFormDimmerDisplay('hide');
+       
             navigate('../home', { replace: true });
         }catch(err){
-            console.log('err',err);
-            signInFormDimmerDisplay('hide');
+ 
         }
     }
 
@@ -144,7 +128,7 @@ function SignIn(){
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6" style={{position: 'relative'}}>
-                        <div ref={signInFormSpinnerRef} className="modal-spinner-wrapper d-flex justify-content-center align-items-center visually-hidden">
+                        <div className={'spinner-wrapper d-flex justify-content-center align-items-center' + (isLoading ? '' : ' visually-hidden')}>
                             <div className="spinner-border text-primary" role="status"></div>
                         </div>  
                         <div>
