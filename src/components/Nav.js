@@ -26,8 +26,6 @@ function Nav(props){
     const authContext = useContext(AuthContext);
     const [showSettingsModal, setSettingsModalDisplay] = useState(false);
 
-    const {isLoading, sendRequest} = useHttpClient()
-
     function changeLangHandler(){
         if(selectedLang === 'en')
             setLang('fa');
@@ -35,32 +33,34 @@ function Nav(props){
             setLang('en');
     }
 
-    function SettingsModal( ) {
+    function SettingsModal() {
+
+        const {isLoading, sendRequest} = useHttpClient();
 
         const handleClose = () => setSettingsModalDisplay(false);
         const [serverCodeStructure, setServerCodeStructure] = useState();
 
-        const fetchServerCodeTypeHandler = useCallback(async () => {
+        const fetchSettingsDataHandler = useCallback(async () => {
 
             try{
-                const resData = await sendRequest('http://localhost:5000/api/server-code-structure');
+                const resData = await sendRequest('http://localhost:5000/api/server-code-structure'); // بعدا نامگذاری اصلاح شود
     
                 setServerCodeStructure(resData[0].structure);
  
             }catch(err){
  
             }
-        },[showSettingsModal,setSettingsModalDisplay,setServerCodeStructure]);
+        },[]);
 
         function onEnterHandler(){
-            fetchServerCodeTypeHandler();
+            fetchSettingsDataHandler();
         }
 
         function serverCodeTypeRadioBtnOnClickHandler(e){
             setServerCodeStructure(e.target.getAttribute('data-val'));
         }
 
-        async function saveSettingsHandler(e){
+        async function saveSettingsHandler(){ // آیا از callback استفاده شود؟
      
             try{
                 await sendRequest(
@@ -71,7 +71,6 @@ function Nav(props){
                         structure: serverCodeStructure,
                     }),
                 );
-    
             }catch(err){
 
             }
@@ -94,9 +93,9 @@ function Nav(props){
             <Modal 
                 show={showSettingsModal} 
                 onHide={handleClose}
-                onEnter={onEnterHandler}
+                onEntered={onEnterHandler}
             >
-                <div className={'spinner-wrapper d-flex justify-content-center align-items-center' +(isLoading ? '' : ' visually-hidden')}>
+                <div className={'spinner-wrapper d-flex justify-content-center align-items-center' + ( isLoading ? '' : ' visually-hidden' )}>
                     <div className="spinner-border text-info" role="status"></div>
                     <span>Loading...</span>
                 </div>
@@ -166,7 +165,7 @@ function Nav(props){
     }
 
     function settingsBtnOnClickHandler(){
-        setSettingsModalDisplay(true)
+        setSettingsModalDisplay(true);
     }
 
     function exitBtnOnClickHandler(){

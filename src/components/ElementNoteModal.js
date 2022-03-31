@@ -17,7 +17,7 @@ function ElementNoteModal() {
 
     const {isLoading, sendRequest} = useHttpClient();
 
-    const fetchElementDataHandler = useCallback(async ()=>{
+    const fetchElementDataHandler = useCallback(async () => {
 
         try{
             const resData = await sendRequest(
