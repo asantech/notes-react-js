@@ -14,7 +14,7 @@ function Home(){
 
     const authContext = useContext(AuthContext);
 
-    const {sendRequest, err, clearErr} = useHttpClient();
+    const { sendRequest, err, clearErr } = useHttpClient();
 
     const [scopeDatas, setScopeData] = useState([]);
     const [isLoadingCards, setLoadingCards] = useState(false);
@@ -25,7 +25,8 @@ function Home(){
         clearErr(); // چرا اینجا؟
 
         try{
-            await sendRequest('http://localhost:5000/api/scopes');
+            const resData = await sendRequest('http://localhost:5000/api/scopes');
+            setScopeData(resData);
         }catch(err){
  
         }
@@ -60,8 +61,8 @@ function Home(){
                 <PageUnaccessibilityMsg/>
                 :
                 <Fragment>
-                    <div className="row row-cols-2">
-                        <div className="subject-cards-segment col col-md-6">
+                    <div className="row">
+                        <div className="subject-cards-segment">
                             <div className="subject-cards-container">
                                 {content}
                             </div>

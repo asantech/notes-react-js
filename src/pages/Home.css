@@ -1,5 +1,6 @@
 .home-page .subject-cards-container{
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     padding: 10px;
 }

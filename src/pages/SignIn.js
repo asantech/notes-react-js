@@ -8,6 +8,12 @@ import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
+import { render } from '@testing-library/react';
+
+import ToastComponent from '../components/ToastComponent';
+
+import ReactDOM from 'react-dom';
+
 function SignIn(){
 
     const authContext = useContext(AuthContext);
@@ -118,7 +124,18 @@ function SignIn(){
        
             navigate('../home', { replace: true });
         }catch(err){
- 
+            render(
+                <ToastComponent
+                    errMsg = {err.message}
+                />
+            );
+
+            // ReactDOM.createPortal(
+            //     <ToastComponent
+            //         errMsg = {err.message}
+            //     />,
+            //     document.getElementById('toasts-container-root')
+            // );
         }
     }
 

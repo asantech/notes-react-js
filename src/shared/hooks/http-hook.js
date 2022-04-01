@@ -19,7 +19,7 @@ export const useHttpClient = () => {
 
             setIsLoading(true);
 
-            const httpAbortCtrl = new AbortController;
+            const httpAbortCtrl = new AbortController();
             activeHttpReqs.current.push(httpAbortCtrl);
             
             try{

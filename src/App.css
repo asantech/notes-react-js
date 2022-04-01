@@ -9,6 +9,15 @@ button{
     border: none;
 }
 
+.toast.err-toast .toast-header{
+    color: var(--bs-body-color);
+    background-color: #D95D56;
+}
+
+.toast.err-toast .toast-body{
+    background-color: #E38580;
+}
+
 .table-non-fluid{
     width: max-content !important;
 }

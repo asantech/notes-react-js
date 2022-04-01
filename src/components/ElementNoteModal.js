@@ -34,7 +34,7 @@ function ElementNoteModal() {
         }catch(err){
  
         }
-    },[notableElementsContext]); 
+    },[sendRequest,notableElementsContext]); 
 
     function onEnterHandler(){
         fetchElementDataHandler();
@@ -61,7 +61,7 @@ function ElementNoteModal() {
               <Modal.Title>Element Description Modal</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-              <div class='content-container' dangerouslySetInnerHTML={{__html: elementNote}} />
+              <div className='content-container' dangerouslySetInnerHTML={{__html: elementNote}} />
           </Modal.Body>
           <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>

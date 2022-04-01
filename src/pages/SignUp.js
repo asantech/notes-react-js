@@ -7,7 +7,7 @@ import { useHttpClient } from '../shared/hooks/http-hook';
 
 import AuthContext from '../contexts/auth-context';
 
-function SignUp(props){
+function SignUp(){
 
     let navigate = useNavigate();
     const usernameInputRef = useRef();
