@@ -12,6 +12,8 @@ import { render } from '@testing-library/react';
 
 import ToastComponent from '../components/ToastComponent';
 
+import Toast from '../components/Toast';
+
 import ReactDOM from 'react-dom';
 
 function SignIn(){
@@ -125,17 +127,13 @@ function SignIn(){
             navigate('../home', { replace: true });
         }catch(err){
             render(
-                <ToastComponent
-                    errMsg = {err.message}
-                />
+                ReactDOM.createPortal(
+                    <ToastComponent
+                        errMsg = {err.message}
+                    />,
+                    document.getElementById('toasts-container-root')
+                )
             );
-
-            // ReactDOM.createPortal(
-            //     <ToastComponent
-            //         errMsg = {err.message}
-            //     />,
-            //     document.getElementById('toasts-container-root')
-            // );
         }
     }
 
