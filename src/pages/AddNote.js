@@ -1,4 +1,4 @@
-import React , { useContext, useState, useEffect, useCallback , Fragment } from 'react';
+import React , { useContext, useState, useEffect, useCallback, useReducer , Fragment } from 'react';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
@@ -12,27 +12,98 @@ import AuthContext from '../contexts/auth-context';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
-function AddNote(){
+const titleReducer = (state,action) => {
+    if(action.type === 'INPUT_ON_CHANGE')
+        return {
+            value: action.val,
+            isValid: action.val.trim() ? true : null,
+        };
+    else if(action.type === 'INPUT_ON_FOCUS')
+        return {
+            value: state.value,
+            isValid: null
+        };
+    else if(action.type === 'INPUT_ON_SUBMIT')
+        return {
+            value: state.value,
+            isValid: state.value.trim() ? true : false
+        };
     
-    // use useReducer (two many compount & related states are sperate)
+    return {
+        value: '',
+        isValid: null,
+    };
+}; 
 
-    const [scopeDatas, setScopeData] = useState([]);
-    const [title, setTitle] = useState('');
-    const [type, setType] = useState(0);
-    const [selectedScopeId, setSelectedScopeId] = useState(null);
-    const [selectedSrcTypeIsURLType, setSelectedSrcTypeIsURLType] = useState('false');
-    const [srcHasName, setSrcHasName] = useState();
-    const [sourceName, setSourceName] = useState('');
-    const [selectedSrcTypeId, setSelectedSrcTypeId] = useState(null);
-    const [titleIsValid, setTitleIsValid] = useState(true);
-    const [sourceNameIsValid, setSourceNameIsValid] = useState(true);
-    const [srcURL, setSrcURL] = useState('');
-    const [srcURLIsValid, setSRCURLIsValid] = useState(true);
-    const [ckEditorContent, setCKEditorContent] = useState('');
+const srcReducer = (state,action) => {
+    let changedStateProps;
 
-    const {isLoading, sendRequest} = useHttpClient();
+    if(action.type === 'SRC_TYPE_DROPDOWN_ON_CHANGE')
+        changedStateProps = {
+            id: action.id,
+            hasName: action.hasName,
+            hasURL: action.hasURL,
+            nameIsValid: null,
+            urlIsValid: null,
+        };
+    else if(action.type === 'SRC_NAME_INPUT_ON_CHANGE')
+        changedStateProps = {
+            name: action.name.trim(),
+            nameIsValid: action.name.trim() ? true : null,
+            isValid: null,
+        };
+    else if(action.type === 'SRC_URL_INPUT_ON_CHANGE')
+        changedStateProps = {
+            url: action.url.trim(),
+            urlIsValid: action.url.trim() ? true : null,
+            isValid: null,
+        };
+    else if(action.type === 'SRC_NAME_INPUT_ON_FOCUS')
+        changedStateProps = {
+            nameIsValid: null,
+        };
+    else if(action.type === 'SRC_URL_INPUT_ON_FOCUS')
+        changedStateProps = {
+            urlIsValid: null,
+        };
+    else if(action.type === 'SRC_ON_SUBMIT')
+        changedStateProps = function(){
+            if(state.hasName === false && state.hasURL === false)
+                return {
+                    isValid: true,
+                };
+            else if(state.hasName === true && state.hasURL === false)
+                return {
+                    nameIsValid: state.name ? true : false,
+                    isValid: state.name ? true : false,
+                };
+            else if(state.hasName === false && state.hasURL === true)
+                return {
+                    urlIsValid: state.url ? true : false,
+                    isValid: state.url ? true : false,
+                };
+            else if(state.hasName === true  && state.hasURL === true)
+                return {
+                    nameIsValid: state.name ? true : false,
+                    isValid: state.name && state.url ? true : false,
+                };
+        }();
+    else if(action.type === 'SRC_RESET')
+        changedStateProps = {
+            url: '',
+            name: '',
+            urlIsValid: null,
+            nameIsValid: null,
+            isValid: null,
+        };
+    
+    return {
+        ...state,
+        ...changedStateProps,
+    };
+}; 
 
-    const authContext = useContext(AuthContext);
+function AddNote(){
 
     const srcTypes = [
         {
@@ -77,6 +148,31 @@ function AddNote(){
         },
     ];
 
+    const authContext = useContext(AuthContext);
+
+    const [scopeDatas, setScopeData] = useState([]);
+    const [type, setType] = useState(0);
+    const [selectedScopeId, setSelectedScopeId] = useState('');
+    const [ckEditorContent, setCKEditorContent] = useState('');
+
+    const [titleState, dispatchTitle] = useReducer(titleReducer, {
+        value: '',
+        isValid: null,  
+    });
+
+    const [srcState, dispatchSrc] = useReducer(srcReducer,{
+        id: srcTypes[0].id,
+        hasURL: srcTypes[0].data.hasURL,
+        hasName: srcTypes[0].data.hasName,
+        url: undefined,
+        name: undefined,
+        urlIsValid: null,
+        nameIsValid: null,
+        isValid: null,
+    });
+
+    const {isLoading, sendRequest} = useHttpClient();
+
     function noteTypeOnChangeHandler(e){
         setType(+e.target.getAttribute('data-val'));
     }
@@ -86,46 +182,56 @@ function AddNote(){
         setSelectedScopeId(selectedOptionDOM.getAttribute('value'));
     }
 
-    function sourceTypeOnChangeHandler(e){
+    function srcTypeOnChangeHandler(e){
         let 
             selectedOptionDOM = e.target.selectedOptions[0],
             selectedOptionDOMData = JSON.parse(selectedOptionDOM.getAttribute('data-data')) 
         ;
-        setSelectedSrcTypeId(selectedOptionDOM.getAttribute('data-id'));
-        setSelectedSrcTypeIsURLType(selectedOptionDOMData.hasURL);
-        setSrcHasName(selectedOptionDOMData.hasName)
-        setSRCURLIsValid(true);
-        setSourceNameIsValid(true);
+        dispatchSrc({
+            type: 'SRC_TYPE_DROPDOWN_ON_CHANGE',
+            id: selectedOptionDOM.getAttribute('value'),
+            hasName: selectedOptionDOMData.hasName,
+            hasURL: selectedOptionDOMData.hasURL,
+        })
     }
 
-    const titleInputOnChangeHandler = event => {
-        setTitle(event.target.value);
-        if(title.trim())
-            setTitleIsValid(true);
+    function titleInputOnChangeHandler(event){
+        dispatchTitle({
+            type: 'INPUT_ON_CHANGE',
+            val: event.target.value.trim(),
+        });
+    }
+
+    function titleInputOnFocusHandler(){
+        dispatchTitle({
+            type: 'INPUT_ON_FOCUS'
+        });
+    }
+
+    function srcNameInputOnChangeHandler(event){
+        dispatchSrc({
+            type: 'SRC_NAME_INPUT_ON_CHANGE',
+            name: event.target.value.trim(),
+        });
     }
 
     function srcURLInputOnChangeHandler(event){
-        setSrcURL(event.target.value);
-        if(srcURL.trim())
-            setSRCURLIsValid(true);
-    }
-
-    function bookNameInputOnChangeHandler(event){
-        setSourceName(event.target.value);
-        if(sourceName.trim())
-            setSourceNameIsValid(true);
+        dispatchSrc({
+            type: 'SRC_URL_INPUT_ON_CHANGE',
+            url: event.target.value.trim(),
+        });
     }
 
     function bookNameInputFocusHandler(){
-        setSourceNameIsValid(true);
-    }
-
-    function titleInputFocusHandler(){
-        setTitleIsValid(true);
+        dispatchSrc({
+            type: 'SRC_NAME_INPUT_ON_FOCUS',
+        });
     }
 
     function srcURLInputFocusHandler(){
-        setSRCURLIsValid(true);
+        dispatchSrc({
+            type: 'SRC_URL_INPUT_ON_FOCUS',
+        });
     }
 
     const fetchScopesHandler = useCallback(async () => {
@@ -140,34 +246,37 @@ function AddNote(){
 
         }
     },[]);
-
+    
     async function addNoteHandler(){
 
         let validationErrsMsgs = [];
-   
-        if(!title.trim()){
+
+        dispatchTitle({
+            type: 'INPUT_ON_SUBMIT',
+        });
+
+        dispatchSrc({
+            type: 'SRC_ON_SUBMIT',
+        })
+
+        if(!titleState.value) // بعدا بررسی شود
             validationErrsMsgs.push('title is empty');
-            setTitleIsValid(false);
+  
+        if(!srcState.isValid){
+            if(srcState.hasName){
+                if(!srcState.nameIsValid)
+                    validationErrsMsgs.push('src name is empty');
+            }else{
+                if(srcState.hasURL){
+                    if(!srcState.urlIsValid)
+                        validationErrsMsgs.push('src url is empty');
+                }
+            }
         }
  
-        if(!ckEditorContent){
+        if(!ckEditorContent)
             validationErrsMsgs.push('note is empty');
-        }
- 
-        if(selectedSrcTypeIsURLType === 'true'){
-            if(!srcURL){
-                validationErrsMsgs.push('srcURL is empty');
-                setSRCURLIsValid(false);
-            }
-        }
- 
-        if(srcHasName === 'true'){
-            if(!sourceName){
-                validationErrsMsgs.push('sourceName is empty');
-                setSourceNameIsValid(false);
-            }
-        }
- 
+
         if(validationErrsMsgs.length)
             return;
  
@@ -179,27 +288,28 @@ function AddNote(){
                 JSON.stringify(function(){
                     let paramsObj = {
                         scopeId: selectedScopeId,
-                        sourceTypeId: selectedSrcTypeId,
-                        title,
+                        title: titleState.value,
                         type,
+                        sourceTypeId: srcState.id,
                         note: ckEditorContent,
                     };
 
-                    if(srcURL)
-                        paramsObj.srcURL = srcURL;
+                    if(srcState.hasName)
+                        paramsObj.name = srcState.name;
 
-                    if(sourceName)
-                        paramsObj.sourceName = sourceName;
+                    if(srcState.hasURL && srcState.urlIsValid)
+                        paramsObj.url = srcState.url;
 
                     return paramsObj;
                 }())
             );
 
             (function ResetAllELements(){
-                setTitle('');
+                dispatchTitle({});
                 setType(0);
-                setSrcURL('');
-                setSourceName('');
+                dispatchSrc({
+                    type: 'SRC_RESET',
+                });
                 setCKEditorContent('');
             })();
         }catch(err){
@@ -209,9 +319,8 @@ function AddNote(){
 
     useEffect(() => {
         fetchScopesHandler();
-        setSelectedSrcTypeId('user-note');
     },[fetchScopesHandler]);
-
+    console.log('add note component is rendered');
     return (
         <div className="add-note-page p-3">
             {
@@ -234,7 +343,7 @@ function AddNote(){
                     <div className="add-note-segment">
                         <div className="mb-3 col-md-7">
                             <label className="form-label" htmlFor="title">Title</label>
-                            <input id="title" name="title" type="text" className={'form-control ' + (titleIsValid ? '' : 'is-invalid')} placeholder="title" onChange={titleInputOnChangeHandler} onFocus={titleInputFocusHandler} value={title} autoComplete='off'></input>
+                            <input id="title" name="title" type="text" className={'form-control' + (titleState.isValid === false ? ' is-invalid' : '')} placeholder="title" onChange={titleInputOnChangeHandler} onFocus={titleInputOnFocusHandler} value={titleState.value} autoComplete='off'></input>
                             <div className="invalid-feedback">
                                 Please enter note's title
                             </div>
@@ -268,7 +377,7 @@ function AddNote(){
                             </div>
                             <div className="mb-3 col-md-2">
                                 <label className="form-label" htmlFor="source-type">SourceType</label>
-                                <select className="form-select" aria-label="Default select example" defaultValue={selectedSrcTypeId} onChange={sourceTypeOnChangeHandler}>
+                                <select className="form-select" aria-label="Default select example" defaultValue={srcState.id} onChange={srcTypeOnChangeHandler}>
                                     {
                                         srcTypes.map((srcType) => (
                                             <option key={srcType.id} value={srcType.id} data-data={JSON.stringify(srcType.data)}>{srcType.lbl}</option>
@@ -277,16 +386,16 @@ function AddNote(){
                                 </select>
                             </div>
                         </div>
-                        <div className={'mb-3 col-md-7' + (srcHasName === false ? ' visually-hidden' : '')}>
+                        <div className={'mb-3 col-md-7' + (srcState.hasName === false ? ' visually-hidden' : '')}>
                             <label className="form-label" htmlFor="source-name">Source's Name</label>
-                            <input id="source-name" name="source-name" type="text" className={'form-control ' + (sourceNameIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={bookNameInputOnChangeHandler} onFocus={bookNameInputFocusHandler} value={sourceName} autoComplete="off"></input>
+                            <input id="source-name" name="source-name" type="text" className={'form-control' + (srcState.nameIsValid === false ? ' is-invalid' : '')} placeholder="source URL" onChange={srcNameInputOnChangeHandler} onFocus={bookNameInputFocusHandler} value={srcState.name} autoComplete="off"></input>
                             <div className="invalid-feedback">
                                 Please enter source's name
                             </div>
                         </div>
-                        <div className={'mb-3 col-md-7' + (selectedSrcTypeIsURLType === false ? ' visually-hidden' : '')}>
+                        <div className={'mb-3 col-md-7' + (srcState.hasURL === false ? ' visually-hidden' : '')}>
                             <label className="form-label" htmlFor="source-url">Source URL</label>
-                            <input id="source-url" name="source-url" type="text" className={'form-control ' + (srcURLIsValid ? '' : 'is-invalid')} placeholder="source URL" onChange={srcURLInputOnChangeHandler} onFocus={srcURLInputFocusHandler} value={srcURL} autoComplete="off"></input>
+                            <input id="source-url" name="source-url" type="text" className={'form-control' + (srcState.urlIsValid === false ? ' is-invalid' : '')} placeholder="source URL" onChange={srcURLInputOnChangeHandler} onFocus={srcURLInputFocusHandler} value={srcState.url} autoComplete="off"></input>
                             <div className="invalid-feedback">
                                 Please enter note's source URL
                             </div>

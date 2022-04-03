@@ -28,6 +28,11 @@ button{
     border-top: none;
 }
 
+.toast-container{
+    position: fixed;
+    bottom: 0;
+}
+
 .spinner-wrapper{
     position: absolute;
     width: 100%;
