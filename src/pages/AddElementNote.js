@@ -101,7 +101,7 @@ function AddElementNote(){
        
         }
 
-    },[selectedNotableElementData,ckEditorContent]);
+    },[selectedNotableElementData.location,selectedNotableElementData.name,ckEditorContent]);
 
     useEffect(() => {
         fetchElementsSpecsHandler();

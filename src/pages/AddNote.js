@@ -259,7 +259,7 @@ function AddNote(){
             type: 'SRC_ON_SUBMIT',
         })
 
-        if(!titleState.value) // بعدا بررسی شود
+        if(!titleState.isValid)  
             validationErrsMsgs.push('title is empty');
   
         if(!srcState.isValid){
@@ -290,16 +290,17 @@ function AddNote(){
                         scopeId: selectedScopeId,
                         title: titleState.value,
                         type,
-                        sourceTypeId: srcState.id,
+                        srcTypeId: srcState.id,
                         note: ckEditorContent,
                     };
 
                     if(srcState.hasName)
-                        paramsObj.name = srcState.name;
+                        paramsObj.srcName = srcState.name;
 
                     if(srcState.hasURL && srcState.urlIsValid)
-                        paramsObj.url = srcState.url;
-
+                        paramsObj.srcURL = srcState.url;
+          
+                    console.log(paramsObj);
                     return paramsObj;
                 }())
             );
@@ -320,7 +321,7 @@ function AddNote(){
     useEffect(() => {
         fetchScopesHandler();
     },[fetchScopesHandler]);
-    console.log('add note component is rendered');
+    // console.log('add note component is rendered');
     return (
         <div className="add-note-page p-3">
             {
