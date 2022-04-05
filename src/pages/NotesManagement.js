@@ -1,6 +1,6 @@
 import React , { useContext, useState, useCallback, useEffect, Fragment} from 'react';
 
-import { Pencil,Trash } from 'react-bootstrap-icons';
+import { Pencil, Trash, Eye } from 'react-bootstrap-icons';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
@@ -39,6 +39,10 @@ function NotesManagement(){
         }
     },[]);
 
+    function ObserveNoteBtnOnClickHandler(){
+
+    }
+
     useEffect(() => {
         fetchNotesHandler();
     },[fetchNotesHandler]);
@@ -59,14 +63,19 @@ function NotesManagement(){
             <tr key={i} id={note._id}>
                 <td>{++i}</td>
                 <td>{note.title}</td>
+                {/* <td>{note.scope}</td> */}
                 <td>
                     <div className="btn-group me-2" role="group" aria-label="First group">
-                        <button type="button" className="btn btn-success btn-sm">
-                            <i className="bi bi-trash-fill"></i>
-                            <Pencil />
+                        <button type="button" className="btn btn-warning btn-sm" onClick={ObserveNoteBtnOnClickHandler}>
+                            <Eye />
                         </button>
                     </div>
                     <div className="btn-group me-2" role="group" aria-label="Second group">
+                        <button type="button" className="btn btn-success btn-sm">
+                            <Pencil />
+                        </button>
+                    </div>
+                    <div className="btn-group me-2" role="group" aria-label="Third group">
                         <button type="button" className="btn btn-danger btn-sm" onClick={delBtnOnClickHandler}>
                             <Trash />
                         </button>
@@ -107,6 +116,7 @@ function NotesManagement(){
                                 <tr>
                                     <th className="col">R</th>
                                     <th className="col">Note Title</th>
+                                    {/* <th className="col">Scope</th> */}
                                     <th className="col">Actions</th>
                                 </tr>
                             </thead>

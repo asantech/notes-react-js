@@ -12,7 +12,7 @@ import AuthContext from '../contexts/auth-context';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
-const titleReducer = (state,action) => {
+const titleReducer = (state, action) => {
     if(action.type === 'INPUT_ON_CHANGE')
         return {
             value: action.val,
@@ -300,7 +300,6 @@ function AddNote(){
                     if(srcState.hasURL && srcState.urlIsValid)
                         paramsObj.srcURL = srcState.url;
           
-                    console.log(paramsObj);
                     return paramsObj;
                 }())
             );
