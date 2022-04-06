@@ -16,11 +16,18 @@ const useInput = (props) => {
         setIsTouched(true);
     }
 
+    function resetInput(){
+        setVal('');
+        setIsTouched(false);
+    }
+
     return{
         val,
+        isValid: valIsValid,
         hasErr,
         inputChangeHandler,
-        inputBlurHandler,
+        inputBlurHandler, 
+        resetInput,
     }
 }
 
