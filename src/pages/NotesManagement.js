@@ -1,6 +1,6 @@
-import React , { useContext, useState, useCallback, useEffect, Fragment} from 'react';
+import React , { useContext, useState, useCallback, useEffect, Fragment } from 'react';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 import { Pencil, Trash, Eye, ArrowRepeat } from 'react-bootstrap-icons';
 
@@ -39,7 +39,11 @@ function NoteListRow(props){
     }
 
     function EditNoteBtnOnClickHandler(){
-        navigate('../add-note', { replace: true });
+        navigate('../note',{
+            state: {
+                ...props.note,
+            },
+        });
     }
 
     function ObserveNoteBtnOnClickHandler(){
@@ -47,7 +51,7 @@ function NoteListRow(props){
     }
  
     return (
-        <tr className='note-row' key={props.note._id} data-id={props.note._id}>
+        <tr className='note-row' data-id={props.note._id}>
             <td>{props.i + 1}</td>
             <td>{props.note.title}</td>
             {/* <td>{note.scope}</td> */}
@@ -121,6 +125,7 @@ function NotesManagement(){
     if(notesDatas.length > 0)
         content = notesDatas.map((note,i) => (
             <NoteListRow
+                key = {note._id}
                 i = {i}
                 note = {note}
                 setNotesDatas = {setNotesDatas}

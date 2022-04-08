@@ -10,7 +10,7 @@ import SignIn from './pages/SignIn';
 import Home from './pages/Home';
 import AddScope from './pages/AddScope';
 import ScopesManagement from './pages/ScopesManagement';
-import AddNote from './pages/AddNote';
+import Note from './pages/Note';
 import NotesManagement from './pages/NotesManagement';
 import AddElementNote from './pages/AddElementNote';
 import ElementNoteManagement from './pages/ElementNoteManagement';
@@ -46,7 +46,7 @@ function App() {
               <Route exact path='/home' element={<Home/>}/>
               <Route exact path='/add-scope' element={<AddScope/>}/>
               <Route exact path='/scopes-management' element={<ScopesManagement/>}/>
-              <Route exact path='/add-note' element={<AddNote/>}/>
+              <Route exact path='/note' element={<Note/>}/>
               <Route exact path='/notes-management' element={<NotesManagement/>}/>
               <Route exact path='/add-element-note' element={<AddElementNote/>}/>
               <Route exact path='/element-note-management' element={<ElementNoteManagement/>}/>

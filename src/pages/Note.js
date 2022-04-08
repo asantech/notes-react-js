@@ -1,5 +1,7 @@
 import React , { useContext, useState, useEffect, useCallback, useReducer , Fragment } from 'react';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
@@ -103,7 +105,7 @@ const srcReducer = (state,action) => {
     };
 }; 
 
-function AddNote(){
+function Note(){
 
     const srcTypes = [
         {
@@ -149,17 +151,20 @@ function AddNote(){
     ];
 
     const authContext = useContext(AuthContext);
+    const location = useLocation();
 
     const [scopeDatas, setScopeData] = useState([]);
     const [type, setType] = useState(0);
     const [selectedScopeId, setSelectedScopeId] = useState('');
     const [ckEditorContent, setCKEditorContent] = useState('');
 
+    const [pageMode, setPageMode] = useState(null);
+
     const [titleState, dispatchTitle] = useReducer(titleReducer, {
         value: '',
         isValid: null,  
     });
-
+ 
     const [srcState, dispatchSrc] = useReducer(srcReducer,{
         id: srcTypes[0].id,
         hasURL: srcTypes[0].data.hasURL,
@@ -172,6 +177,7 @@ function AddNote(){
     });
 
     const {isLoading, sendReq} = useHttpClient();
+    const navigate = useNavigate();
 
     function noteTypeOnChangeHandler(e){
         setType(+e.target.getAttribute('data-val'));
@@ -192,7 +198,7 @@ function AddNote(){
             id: selectedOptionDOM.getAttribute('value'),
             hasName: selectedOptionDOMData.hasName,
             hasURL: selectedOptionDOMData.hasURL,
-        })
+        });
     }
 
     function titleInputOnChangeHandler(event){
@@ -240,17 +246,23 @@ function AddNote(){
             const resData = await sendReq('http://localhost:5000/api/scopes');
 
             setScopeData(resData);
-            if(resData.length)
-                setSelectedScopeId(resData[0]._id);
+
+            // console.log('pageMode',pageMode);
+
+            // if( 
+            //     pageMode === 'add' &&
+            //     resData.length 
+            // )
+            //     setSelectedScopeId(resData[0]._id);
         }catch(err){
 
         }
     },[]);
     
-    async function addNoteHandler(){
+    async function submitNoteHandler(){
 
         let validationErrsMsgs = [];
-
+ 
         dispatchTitle({
             type: 'INPUT_ON_SUBMIT',
         });
@@ -283,7 +295,7 @@ function AddNote(){
         try{
             await sendReq(
                 'http://localhost:5000/api/notes',
-                'POST',
+                pageMode === 'add' ? 'POST' : 'PATCH',
                 undefined,
                 JSON.stringify(function(){
                     let paramsObj = {
@@ -293,6 +305,9 @@ function AddNote(){
                         srcTypeId: srcState.id,
                         note: ckEditorContent,
                     };
+
+                    if(pageMode === 'edit')
+                        paramsObj._id = location.state._id;
 
                     if(srcState.hasName)
                         paramsObj.srcName = srcState.name;
@@ -305,12 +320,15 @@ function AddNote(){
             );
 
             (function ResetAllELements(){
-                dispatchTitle({});
-                setType(0);
-                dispatchSrc({
-                    type: 'SRC_RESET',
-                });
-                setCKEditorContent('');
+                if(pageMode === 'add'){
+                    dispatchTitle({});
+                    setType(0);
+                    dispatchSrc({
+                        type: 'SRC_RESET',
+                    });
+                    setCKEditorContent('');
+                }else
+                    navigate('/notes-management');
             })();
         }catch(err){
  
@@ -318,8 +336,51 @@ function AddNote(){
     }
 
     useEffect(() => {
+
+        let locationState = location.state;
+        if(!locationState)
+            setPageMode('add');
+        if(
+            locationState &&
+            '_id' in locationState
+        ){
+            setPageMode('edit');
+            dispatchTitle({
+                type: 'INPUT_ON_CHANGE',
+                val: locationState.title,
+            });
+
+            setType(locationState.type);
+
+            setSelectedScopeId(locationState.scopeId);
+
+            dispatchSrc({
+                type: 'SRC_TYPE_DROPDOWN_ON_CHANGE',
+                id: location.state.srcTypeId,
+                hasName: 'srcName' in location.state,
+                hasURL: 'srcURL' in location.state,
+            });
+
+            if('srcName' in location.state)
+                dispatchSrc({
+                    type: 'SRC_NAME_INPUT_ON_CHANGE',
+                    name: location.state.srcName,
+                });
+
+            if('srcURL' in location.state)
+                dispatchSrc({
+                    type: 'SRC_URL_INPUT_ON_CHANGE',
+                    url: location.state.srcURL,
+                });
+
+            setCKEditorContent(locationState.note);
+        }
+    },[]);
+
+    useEffect(() => {
         fetchScopesHandler();
     },[fetchScopesHandler]);
+
     // console.log('add note component is rendered');
     return (
         <div className="add-note-page p-3">
@@ -333,7 +394,7 @@ function AddNote(){
                     </div> 
                     <div className='page-title-box'>
                         <h4 className='inline page-title'>
-                            Add Note
+                            {pageMode === 'add' ? 'Add' : 'Edit'} Note
                         </h4>
                         <NotableElementInfoIcon 
                             elementLocation = 'add-note-page'
@@ -367,7 +428,7 @@ function AddNote(){
                         <div className="row">
                             <div className="mb-3 col-md-2">
                                 <label className="form-label" htmlFor="Scope">Scope</label>
-                                <select className="form-select" aria-label="Default select example" onChange={scopeOnChangeHandler}>
+                                <select className="form-select" aria-label="Default select example" value={selectedScopeId} onChange={scopeOnChangeHandler}>
                                     {
                                         scopeDatas.map((scope) => (
                                             <option key={scope._id} value={scope._id}>{scope.name}</option>
@@ -377,11 +438,11 @@ function AddNote(){
                             </div>
                             <div className="mb-3 col-md-2">
                                 <label className="form-label" htmlFor="source-type">SourceType</label>
-                                <select className="form-select" aria-label="Default select example" defaultValue={srcState.id} onChange={srcTypeOnChangeHandler}>
+                                <select className="form-select" aria-label="Default select example" value={srcState.id} onChange={srcTypeOnChangeHandler}>
                                     {
-                                        srcTypes.map((srcType) => (
-                                            <option key={srcType.id} value={srcType.id} data-data={JSON.stringify(srcType.data)}>{srcType.lbl}</option>
-                                        ))
+                                        srcTypes.map((srcType) => {
+                                            return <option key={srcType.id} value={srcType.id} data-data={JSON.stringify(srcType.data)}>{srcType.lbl}</option>;
+                                        })
                                     }
                                 </select>
                             </div>
@@ -424,9 +485,18 @@ function AddNote(){
                                 editor={ DecoupledEditor }
                             />
                         </div>
-                        <button type="button" className="add-btn btn btn-primary" onClick={addNoteHandler}>
-                            Add
-                        </button>
+                        {
+                            pageMode === 'add' &&
+                            <button type="button" className="add-btn btn btn-primary" onClick={submitNoteHandler}>
+                                Add
+                            </button>
+                        }
+                        {
+                            pageMode === 'edit' &&
+                            <button type="button" className="add-btn btn btn-success" onClick={submitNoteHandler}>
+                                Edit
+                            </button>
+                        }
                     </div>
                 </Fragment>
             }
@@ -434,4 +504,4 @@ function AddNote(){
     ); 
 }
 
-export default AddNote;
+export default Note;
