@@ -2,7 +2,7 @@ import React , { useContext, useState, useEffect, useCallback, Fragment } from '
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
-import { Pencil, Trash } from 'react-bootstrap-icons';
+import { Pencil, Trash, ArrowRepeat } from 'react-bootstrap-icons';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
@@ -16,7 +16,7 @@ function ScopesManagement(){
 
     const [scopeDatas, setScopeData] = useState([]);
 
-    const { isLoading, err, sendRequest, clearErr } = useHttpClient();
+    const { isLoading, err, sendReq, clearErr } = useHttpClient();
 
     let content;
 
@@ -25,7 +25,7 @@ function ScopesManagement(){
         clearErr();
 
         try{
-            const resData = await sendRequest('http://localhost:5000/api/scopes');
+            const resData = await sendReq('http://localhost:5000/api/scopes');
 
             const scopesArray = [];
 
@@ -38,6 +38,10 @@ function ScopesManagement(){
 
         }
     },[]);
+
+    async function refreshScopesList(){
+        fetchScopesHandler();
+    }
 
     useEffect(() => {
         fetchScopesHandler();
@@ -101,6 +105,7 @@ function ScopesManagement(){
                             elementLocation = 'scopes-management-page'
                             elementName = 'scopes-management-page'
                         />
+                        <ArrowRepeat className='m-2' onClick={refreshScopesList}/>
                     </div>
                     <div className="added-scopes-list-segment">
                         <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">

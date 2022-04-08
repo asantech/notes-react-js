@@ -20,7 +20,7 @@ function SignIn(){
 
     const authContext = useContext(AuthContext);
 
-    const { isLoading , sendRequest } = useHttpClient();
+    const { isLoading , sendReq } = useHttpClient();
 
     let navigate = useNavigate();
     const usernameInputRef = useRef();
@@ -112,7 +112,7 @@ function SignIn(){
             return;
 
         try{
-            await sendRequest(
+            await sendReq(
                 'http://localhost:5000/api/users',
                 'POST',
                 undefined,

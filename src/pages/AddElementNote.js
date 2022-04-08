@@ -16,7 +16,7 @@ function AddElementNote(){
     // اجرا شدن کد جاوا اسکریپت را براساس ورود داشتن فرد شرطی شود
     const authContext = useContext(AuthContext);
   
-    const {isLoading, sendRequest} = useHttpClient();
+    const {isLoading, sendReq} = useHttpClient();
     
     const [notableElementsDatas, setNotableElementsDatas] = useState([]);
     const [selectedNotableElementData, setSelectedNotableElementData] = useState([]);
@@ -47,7 +47,7 @@ function AddElementNote(){
     const fetchElementsSpecsHandler = useCallback(async () => {
 
         try{
-            const resData = await sendRequest('http://localhost:5000/api/elements-notes/');
+            const resData = await sendReq('http://localhost:5000/api/elements-notes/');
 
             if(resData.length){
                 let elementNoteLocationsMap = {};
@@ -85,7 +85,7 @@ function AddElementNote(){
             return;
 
         try{
-            const resData = await sendRequest(
+            const resData = await sendReq(
                 'http://localhost:5000/api/elements-notes/',
                 'PATCH',
                 undefined,

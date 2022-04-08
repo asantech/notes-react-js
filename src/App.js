@@ -16,6 +16,7 @@ import AddElementNote from './pages/AddElementNote';
 import ElementNoteManagement from './pages/ElementNoteManagement';
 import Sources from './pages/Sources';
 import AppInfo from './pages/AppInfo';
+import HelpCenter from './pages/HelpCenter';
 
 import Nav from'./components/Nav';
 
@@ -51,6 +52,7 @@ function App() {
               <Route exact path='/element-note-management' element={<ElementNoteManagement/>}/>
               <Route exact path='/sources' element={<Sources/>}/>
               <Route exact path='/app-info' element={<AppInfo/>}/>
+              <Route exact path='/help-center' element={<HelpCenter/>}/>
             </Routes>
           </div>
         </NotableElementsContextProvider>

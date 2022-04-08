@@ -19,7 +19,7 @@ function AddScope(){
 
     const [ckEditorContent, setCKEditorContent] = useState('');
 
-    const {isLoading, sendRequest} = useHttpClient();
+    const {isLoading, sendReq} = useHttpClient();
 
     const authContext = useContext(AuthContext);
 
@@ -46,7 +46,7 @@ function AddScope(){
             return;
 
         try{
-            await sendRequest(
+            await sendReq(
                 'http://localhost:5000/api/scopes',
                 'POST',
                 undefined,

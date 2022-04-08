@@ -10,14 +10,14 @@ function AppInfo() {
 
   const [appInfoPageContent, setAppInfoPageContent] = useState('');
 
-  const {isLoading, sendRequest} = useHttpClient();
+  const {isLoading, sendReq} = useHttpClient();
 
   const authContext = useContext(AuthContext);
 
   const fetchElementDataHandler = useCallback(async () => {
 
     try{
-        const resData = await sendRequest(
+        const resData = await sendReq(
             'http://localhost:5000/api/elements-notes/',
             'POST',
             undefined,

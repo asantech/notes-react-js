@@ -35,6 +35,8 @@ button{
 
 .spinner-wrapper{
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: 1;
@@ -70,4 +72,16 @@ button{
 
 .app-segment div.ck-editor-content-output figure.table > table{
     width: 100%;
+}
+
+table tr.note-row{
+    position: relative;
+}
+
+table tr.note-row td.note-row-spinner-container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }

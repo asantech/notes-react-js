@@ -15,12 +15,12 @@ function ElementNoteModal() {
     const handleClose = () => notableElementsContext.setElementNoteModalDisplay(false);
     const [elementNote, setElementNote] = useState();
 
-    const {isLoading, sendRequest} = useHttpClient();
+    const {isLoading, sendReq} = useHttpClient();
 
     const fetchElementDataHandler = useCallback(async () => {
 
         try{
-            const resData = await sendRequest(
+            const resData = await sendReq(
                 'http://localhost:5000/api/elements-notes/',
                 'POST',
                 undefined,
@@ -34,7 +34,7 @@ function ElementNoteModal() {
         }catch(err){
  
         }
-    },[sendRequest,notableElementsContext]); 
+    },[sendReq,notableElementsContext]); 
 
     function onEnterHandler(){
         fetchElementDataHandler();

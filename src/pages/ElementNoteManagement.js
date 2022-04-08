@@ -2,6 +2,8 @@ import React , { useContext, useState, useEffect, useCallback, Fragment } from '
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
+import { ArrowRepeat } from 'react-bootstrap-icons';
+
 import { useHttpClient } from '../shared/hooks/http-hook';
 
 import { extractTextFromHTMLStr } from '../shared/funcs/ExtractTxtFromHTML';
@@ -15,7 +17,7 @@ import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 function ElementNoteManagement(){
 
     const [elementsNotesDatas, setElementsNotesDatas] = useState([]);
-    const {isLoading, err, sendRequest, clearErr} = useHttpClient();
+    const {isLoading, err, sendReq, clearErr} = useHttpClient();
 
     const authContext = useContext(AuthContext);
 
@@ -25,7 +27,7 @@ function ElementNoteManagement(){
 
         clearErr();
         try{
-            const resData = await sendRequest('http://localhost:5000/api/elements-notes/');
+            const resData = await sendReq('http://localhost:5000/api/elements-notes/');
 
             const elementsNotesDatasArray = [];
 
@@ -37,6 +39,10 @@ function ElementNoteManagement(){
 
         }
     },[]);
+
+    async function refreshElementsNotesList(){
+        fetchElementsNotesHandler();
+    } 
 
     useEffect(() => {
         fetchElementsNotesHandler();
@@ -96,6 +102,7 @@ function ElementNoteManagement(){
                             elementLocation = 'element-note-management-page'
                             elementName = 'element-note-management-page'
                         />
+                        <ArrowRepeat className='m-2' onClick={refreshElementsNotesList}/>
                     </div>
                     <div className="notable-elements-list-segment">
                         <table className="table table-bordered table-striped table-hover table-non-fluid table-sm">

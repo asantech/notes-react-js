@@ -18,14 +18,14 @@ const titleReducer = (state, action) => {
             value: action.val,
             isValid: action.val.trim() ? true : null,
         };
-    else if(action.type === 'INPUT_ON_FOCUS')
+    else if(action.type === 'INPUT_ON_FOCUS') 
         return {
             value: state.value,
             isValid: null
         };
     else if(action.type === 'INPUT_ON_SUBMIT')
         return {
-            value: state.value,
+            value: state.value.trim(),
             isValid: state.value.trim() ? true : false
         };
     
@@ -48,13 +48,13 @@ const srcReducer = (state,action) => {
         };
     else if(action.type === 'SRC_NAME_INPUT_ON_CHANGE')
         changedStateProps = {
-            name: action.name.trim(),
+            name: action.name,
             nameIsValid: action.name.trim() ? true : null,
             isValid: null,
         };
     else if(action.type === 'SRC_URL_INPUT_ON_CHANGE')
         changedStateProps = {
-            url: action.url.trim(),
+            url: action.url,
             urlIsValid: action.url.trim() ? true : null,
             isValid: null,
         };
@@ -164,14 +164,14 @@ function AddNote(){
         id: srcTypes[0].id,
         hasURL: srcTypes[0].data.hasURL,
         hasName: srcTypes[0].data.hasName,
-        url: undefined,
-        name: undefined,
+        url: '',
+        name: '',
         urlIsValid: null,
         nameIsValid: null,
         isValid: null,
     });
 
-    const {isLoading, sendRequest} = useHttpClient();
+    const {isLoading, sendReq} = useHttpClient();
 
     function noteTypeOnChangeHandler(e){
         setType(+e.target.getAttribute('data-val'));
@@ -198,7 +198,7 @@ function AddNote(){
     function titleInputOnChangeHandler(event){
         dispatchTitle({
             type: 'INPUT_ON_CHANGE',
-            val: event.target.value.trim(),
+            val: event.target.value,
         });
     }
 
@@ -211,14 +211,14 @@ function AddNote(){
     function srcNameInputOnChangeHandler(event){
         dispatchSrc({
             type: 'SRC_NAME_INPUT_ON_CHANGE',
-            name: event.target.value.trim(),
+            name: event.target.value,
         });
     }
 
     function srcURLInputOnChangeHandler(event){
         dispatchSrc({
             type: 'SRC_URL_INPUT_ON_CHANGE',
-            url: event.target.value.trim(),
+            url: event.target.value,
         });
     }
 
@@ -237,7 +237,7 @@ function AddNote(){
     const fetchScopesHandler = useCallback(async () => {
 
         try{
-            const resData = await sendRequest('http://localhost:5000/api/scopes');
+            const resData = await sendReq('http://localhost:5000/api/scopes');
 
             setScopeData(resData);
             if(resData.length)
@@ -281,7 +281,7 @@ function AddNote(){
             return;
  
         try{
-            await sendRequest(
+            await sendReq(
                 'http://localhost:5000/api/notes',
                 'POST',
                 undefined,

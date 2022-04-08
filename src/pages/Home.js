@@ -14,7 +14,7 @@ function Home(){
 
     const authContext = useContext(AuthContext);
 
-    const { sendRequest, err, clearErr } = useHttpClient();
+    const { sendReq, err, clearErr } = useHttpClient();
 
     const [scopeDatas, setScopeData] = useState([]);
     const [isLoadingCards, setLoadingCards] = useState(false);
@@ -25,7 +25,7 @@ function Home(){
         clearErr(); // چرا اینجا؟
 
         try{
-            const resData = await sendRequest('http://localhost:5000/api/scopes');
+            const resData = await sendReq('http://localhost:5000/api/scopes');
             setScopeData(resData);
         }catch(err){
  

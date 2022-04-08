@@ -12,7 +12,7 @@ import ReactTooltip from 'react-tooltip';
 
 import { Button, Modal } from 'react-bootstrap';
 
-import { HouseDoorFill, Plus, CardText, BoxArrowInRight, Gear ,InfoCircle ,JournalText, FolderPlus, Folder, Diagram3, PersonPlusFill, PersonCircle} from 'react-bootstrap-icons';
+import { HouseDoorFill, Plus, CardText, BoxArrowInRight, Gear ,InfoCircle ,JournalText, FolderPlus, Folder, Diagram3, PersonPlusFill, PersonCircle, QuestionCircle} from 'react-bootstrap-icons';
 
 import './Nav.css';
  
@@ -276,9 +276,17 @@ function Nav(props){
                                 </ReactTooltip>
                             </Link>
                         </li>
+                        <li className="right-aligned">
+                            <Link to="/help-center" className="tooltip-box" exact="true" data-tip data-for="help-center-tip">
+                                <QuestionCircle/>
+                                <ReactTooltip id="help-center-tip" place="bottom" effect="solid">
+                                    App Info
+                                </ReactTooltip>
+                            </Link>
+                        </li>
                         {
                             selectedLang === 'fa' && 
-                            <li className='small right-aligned bordered padded' onClick={changeLangHandler}>
+                            <li className='small bordered padded' onClick={changeLangHandler}>
                                 <button>
                                     En
                                 </button>
@@ -286,7 +294,7 @@ function Nav(props){
                         }
                         {
                             selectedLang === 'en' && 
-                            <li className='small right-aligned bordered padded' onClick={changeLangHandler}>
+                            <li className='small bordered padded' onClick={changeLangHandler}>
                                 <button>
                                     Fa
                                 </button>

@@ -7,14 +7,14 @@ export const useHttpClient = () => {
 
     const activeHttpReqs = useRef([]);
 
-    const sendRequest = useCallback( 
+    const sendReq = useCallback( 
         async (
             url, 
             method = 'GET', 
             headers = {
                 'Content-type': 'application/json',
             },
-            body = null,
+            body = null
         ) => {
 
             setIsLoading(true);
@@ -64,7 +64,7 @@ export const useHttpClient = () => {
     return {
         isLoading,
         err,
-        sendRequest,
+        sendReq,
         clearErr
     }
 }

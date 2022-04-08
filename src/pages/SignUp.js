@@ -20,7 +20,7 @@ function SignUp(){
     const signUpFormSpinnerRef = useRef();
     const [signUpMethod,setSignUpMethod] = useState('email');
 
-    const { sendRequest } = useHttpClient();
+    const { sendReq } = useHttpClient();
 
     const authContext = useContext(AuthContext);
  
@@ -209,7 +209,7 @@ function SignUp(){
         signUpFormDimmerDisplay('show');
 
         try{
-            await sendRequest(
+            await sendReq(
                 'http://localhost:5000/api/users/sign-up',
                 'POST',
                 undefined,
