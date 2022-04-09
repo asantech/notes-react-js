@@ -1,9 +1,9 @@
-import React, {useContext,useState} from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import {Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
-import AuthContext from './contexts/auth-context';
-import {NotableElementsContextProvider} from './contexts/notable-elements-context';
+import { NotableElementsContextProvider } from './contexts/notable-elements-context';
 
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
@@ -26,10 +26,10 @@ import './App.css';
 
 function App() {
 
-  const authContext = useContext(AuthContext);
+  const auth = useSelector(state => state.auth);
 
   const [selectedLang, setLang] = useState('en');
-
+  
   return (
     <div className='app-segment'>
         <NotableElementsContextProvider>
@@ -40,7 +40,7 @@ function App() {
           />
           <div className='pages-segment'>
             <Routes>
-              <Route path='/' element={authContext.userIsSignedIn ? <Home/> : <SignUp/>}/>
+              <Route path='/' element={auth.userIsSignedIn ? <Home/> : <SignIn/>}/>
               <Route path='/sign-up' element={<SignUp/>}/>
               <Route exact path='/sign-in' element={<SignIn/>}/>
               <Route exact path='/home' element={<Home/>}/>

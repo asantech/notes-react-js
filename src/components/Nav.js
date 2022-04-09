@@ -1,10 +1,12 @@
-import React, { useContext, Fragment, useState, useCallback } from 'react';
+import React, { Fragment, useState, useCallback } from 'react';
 
 import ReactDOM from 'react-dom';
 
-import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
-import AuthContext from '../contexts/auth-context';
+import { authActions } from '../store/index';
+
+import { Link } from 'react-router-dom';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
  
@@ -23,7 +25,9 @@ function Nav(props){
         setLang = props.setLang
     ;
 
-    const authContext = useContext(AuthContext);
+    const auth = useSelector(state => state.auth);
+    const dispatch = useDispatch();
+
     const [showSettingsModal, setSettingsModalDisplay] = useState(false);
 
     function changeLangHandler(){
@@ -168,15 +172,15 @@ function Nav(props){
         setSettingsModalDisplay(true);
     }
 
-    function exitBtnOnClickHandler(){
-        authContext.signOutHandler();
+    function signOutBtnOnClickHandler(){
+        dispatch(authActions.signOut());
     }
  
     return (
         <Fragment>
             <nav>
                 {
-                    !authContext.userIsSignedIn && 
+                    !auth.userIsSignedIn && 
                     <>
                         <span className="log-in-page-welcome-msg">
                             You will get the best user experience by using Notes app :-)
@@ -202,7 +206,7 @@ function Nav(props){
                     </>
                 }
                 {
-                    authContext.userIsSignedIn &&
+                    auth.userIsSignedIn &&
                     <ul className='logged-in-nav-links-list nav-links-list'>
                         <li>
                             <Link to="/home" className="tooltip-box" exact="true" data-tip data-for="home-tip">
@@ -306,7 +310,7 @@ function Nav(props){
                             </button>
                         </li>
                         <li>
-                            <Link to="/" exact="true" onClick={exitBtnOnClickHandler}>
+                            <Link to="/" exact="true" onClick={signOutBtnOnClickHandler}>
                                 <BoxArrowInRight/>
                             </Link>
                         </li>

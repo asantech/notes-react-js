@@ -1,20 +1,20 @@
 import ReactDOM from 'react-dom';
-import {BrowserRouter} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 import './index.css';
 import App from './App';
-
-import {AuthContextProvider} from './contexts/auth-context';
+import store from './store/index';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-    <AuthContextProvider>
+    <Provider store={store}>
         <BrowserRouter>
             <App />
         </BrowserRouter>
-    </AuthContextProvider>,
+    </Provider>,
     document.getElementById('root')
 );
 

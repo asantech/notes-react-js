@@ -1,4 +1,6 @@
-import React , { useContext, useState, useEffect, useCallback, useReducer , Fragment } from 'react';
+import React , { useState, useEffect, useCallback, useReducer , Fragment } from 'react';
+
+import { useSelector } from 'react-redux';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -9,8 +11,6 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
-
-import AuthContext from '../contexts/auth-context';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
@@ -150,7 +150,7 @@ function Note(){
         },
     ];
 
-    const authContext = useContext(AuthContext);
+    const auth = useSelector(state => state.auth);
     const location = useLocation();
 
     const [scopeDatas, setScopeData] = useState([]);
@@ -385,7 +385,7 @@ function Note(){
     return (
         <div className="add-note-page p-3">
             {
-                !authContext.userIsSignedIn ?
+                !auth.userIsSignedIn ?
                 <PageUnaccessibilityMsg/>
                 :
                 <Fragment>

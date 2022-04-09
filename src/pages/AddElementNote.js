@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useCallback, Fragment } from 'react';
+import { useState, useEffect, useCallback, Fragment } from 'react';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
@@ -8,13 +8,13 @@ import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
-import AuthContext from '../contexts/auth-context';
+import { useSelector } from 'react-redux';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
 function AddElementNote(){
-    // اجرا شدن کد جاوا اسکریپت را براساس ورود داشتن فرد شرطی شود
-    const authContext = useContext(AuthContext);
+
+    const auth = useSelector(state => state.auth);
   
     const {isLoading, sendReq} = useHttpClient();
     
@@ -110,7 +110,7 @@ function AddElementNote(){
     return (
         <div className="add-element-note-page p-3">
             {
-                !authContext.userIsSignedIn ?
+                !auth.userIsSignedIn ?
                 <PageUnaccessibilityMsg/>
                 :
                 <Fragment>

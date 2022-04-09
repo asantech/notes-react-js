@@ -1,6 +1,8 @@
-import React , { useContext, useState, useEffect, useCallback, Fragment } from 'react';
+import React , { useState, useEffect, useCallback, Fragment } from 'react';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
+
+import { useSelector } from 'react-redux';
 
 import { ArrowRepeat } from 'react-bootstrap-icons';
 
@@ -10,8 +12,6 @@ import { extractTextFromHTMLStr } from '../shared/funcs/ExtractTxtFromHTML';
 
 import { getWordsCount } from '../shared/funcs/GetWordsCount';
 
-import AuthContext from '../contexts/auth-context';
-
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
 function ElementNoteManagement(){
@@ -19,7 +19,7 @@ function ElementNoteManagement(){
     const [elementsNotesDatas, setElementsNotesDatas] = useState([]);
     const {isLoading, err, sendReq, clearErr} = useHttpClient();
 
-    const authContext = useContext(AuthContext);
+    const auth = useSelector(state => state.auth);
 
     let content;
 
@@ -90,7 +90,7 @@ function ElementNoteManagement(){
     return (
         <div className="notable-elements-management-page p-3">
             {
-                !authContext.userIsSignedIn ?
+                !auth.userIsSignedIn ?
                 <PageUnaccessibilityMsg/>
                 :
                 <Fragment>

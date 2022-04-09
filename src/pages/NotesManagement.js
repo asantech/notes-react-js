@@ -1,4 +1,6 @@
-import React , { useContext, useState, useCallback, useEffect, Fragment } from 'react';
+import React , { useState, useCallback, useEffect, Fragment } from 'react';
+
+import { useSelector } from 'react-redux';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -7,8 +9,6 @@ import { Pencil, Trash, Eye, ArrowRepeat } from 'react-bootstrap-icons';
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { confirmDel } from '../shared/funcs/ConfirmDel';
-
-import AuthContext from '../contexts/auth-context';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
@@ -84,7 +84,7 @@ function NoteListRow(props){
 
 function NotesManagement(){
 
-    const authContext = useContext(AuthContext);
+    const auth = useSelector(state => state.auth);
   
     const {isLoading: notesAreloading, sendReq: sendLoadNotesReq, err: loadNotesErr, clearErr: clearLoadNotesErr} = useHttpClient();
 
@@ -145,7 +145,7 @@ function NotesManagement(){
     return (
         <div className="notes-management-page p-3">
             {
-                !authContext.userIsSignedIn ?
+                !auth.userIsSignedIn ?
                     <PageUnaccessibilityMsg/>
                 :
                     <Fragment>

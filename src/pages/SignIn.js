@@ -1,8 +1,10 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
+
+import { useDispatch } from 'react-redux';
+
+import { authActions } from '../store/index';
 
 import { useNavigate } from 'react-router-dom';
-
-import AuthContext from '../contexts/auth-context';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
@@ -18,7 +20,7 @@ import ReactDOM from 'react-dom';
 
 function SignIn(){
 
-    const authContext = useContext(AuthContext);
+    const dispatch = useDispatch();
 
     const { isLoading , sendReq } = useHttpClient();
 
@@ -122,7 +124,7 @@ function SignIn(){
                 }),
             );
 
-            authContext.signInHandler();
+            dispatch(authActions.signIn());
        
             navigate('../home', { replace: true });
         }catch(err){

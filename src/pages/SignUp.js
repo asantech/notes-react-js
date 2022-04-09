@@ -1,11 +1,14 @@
-import React, { useContext, useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef } from 'react';
+
+import { useDispatch } from 'react-redux';
+
+import { authActions } from '../store/index'
+
+import { useNavigate } from 'react-router-dom';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
-
-import AuthContext from '../contexts/auth-context';
 
 function SignUp(){
 
@@ -22,7 +25,7 @@ function SignUp(){
 
     const { sendReq } = useHttpClient();
 
-    const authContext = useContext(AuthContext);
+    const dispatch = useDispatch();
  
     function signUpFormDimmerDisplay(val){
         if(arguments.length){
@@ -222,8 +225,8 @@ function SignUp(){
                 }),
             );
  
-            signUpFormDimmerDisplay('hide'); // بررسی شود که چرا پس از اجرا شدن authContext.signInHandler خطا می دهد که spinner وجود ندارد
-            authContext.signInHandler();
+            signUpFormDimmerDisplay('hide'); 
+            dispatch(authActions.signIn());
             navigate('../home', { replace: true });
         }catch(err){
             signUpFormDimmerDisplay('hide');

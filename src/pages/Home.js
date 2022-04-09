@@ -1,4 +1,6 @@
-import React, { useContext, useState, useEffect, useCallback, Fragment } from 'react';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
+
+import { useSelector } from 'react-redux';
 
 import ScopeCard from '../components/cards/ScopeCard';
 
@@ -6,13 +8,11 @@ import { useHttpClient } from '../shared/hooks/http-hook';
 
 import './Home.css';
 
-import AuthContext from '../contexts/auth-context';
-
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
 function Home(){
 
-    const authContext = useContext(AuthContext);
+    const auth = useSelector(state => state.auth);
 
     const { sendReq, err, clearErr } = useHttpClient();
 
@@ -57,7 +57,7 @@ function Home(){
     return (
         <div className="home-page p-3">
             {
-                !authContext.userIsSignedIn ?
+                !auth.userIsSignedIn ?
                 <PageUnaccessibilityMsg/>
                 :
                 <Fragment>

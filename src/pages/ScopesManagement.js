@@ -1,4 +1,6 @@
-import React , { useContext, useState, useEffect, useCallback, Fragment } from 'react';
+import React , { useState, useEffect, useCallback, Fragment } from 'react';
+
+import { useSelector } from 'react-redux';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
@@ -6,13 +8,11 @@ import { Pencil, Trash, ArrowRepeat } from 'react-bootstrap-icons';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
-import AuthContext from '../contexts/auth-context';
-
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
 function ScopesManagement(){
 
-    const authContext = useContext(AuthContext);
+    const auth = useSelector(state => state.auth);
 
     const [scopeDatas, setScopeData] = useState([]);
 
@@ -93,7 +93,7 @@ function ScopesManagement(){
     return (
         <div className='scopes-management-page p-3'>
             {
-                !authContext.userIsSignedIn ?
+                !auth.userIsSignedIn ?
                 <PageUnaccessibilityMsg />
                 :
                 <Fragment>
