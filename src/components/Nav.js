@@ -229,10 +229,10 @@ function Nav(props){
                             </Link>
                         </li>
                         <li>
-                            <Link to="/add-note" className="tooltip-box" exact="true" data-tip data-for="add-note-tip">
+                            <Link to="/note" className="tooltip-box" exact="true" data-tip data-for="note-tip">
                                 <Plus/><CardText/>
-                                <ReactTooltip id="add-note-tip" place="bottom" effect="solid" arrow>
-                                    Add Note
+                                <ReactTooltip id="note-tip" place="bottom" effect="solid" arrow>
+                                    Note
                                 </ReactTooltip>
                             </Link>
                         </li>
