@@ -158,7 +158,7 @@ function Note(){
     const [selectedScopeId, setSelectedScopeId] = useState('');
     const [ckEditorContent, setCKEditorContent] = useState('');
 
-    // const [pageMode, setPageMode] = useState(null);
+    // let [pageMode, setPageMode] = useState(null);
     let pageMode = null;
 
     const [titleState, dispatchTitle] = useReducer(titleReducer, {
@@ -241,13 +241,22 @@ function Note(){
         });
     }
 
+    function ResetInputs(){
+        dispatchTitle({});
+        setType(0);
+        dispatchSrc({
+            type: 'SRC_RESET',
+        });
+        setCKEditorContent('');
+    }
+
     const fetchScopesHandler = useCallback(async () => {
 
         try{
             const resData = await sendReq('http://localhost:5000/api/scopes');
 
             setScopeData(resData);
-
+ 
             if( 
                 pageMode === 'add' &&
                 resData.length 
@@ -319,14 +328,9 @@ function Note(){
             );
 
             (function AfterSubmitSuccess(){
-                if(pageMode === 'add'){
-                    dispatchTitle({});
-                    setType(0);
-                    dispatchSrc({
-                        type: 'SRC_RESET',
-                    });
-                    setCKEditorContent('');
-                }else if(pageMode === 'edit')
+                if(pageMode === 'add')
+                    ResetInputs();
+                else if(pageMode === 'edit')
                     navigate('/notes-management');
             })();
         }catch(err){
@@ -337,15 +341,16 @@ function Note(){
     let locationState = location.state;
     if(!locationState)
         pageMode = 'add';
-    else if(
-        locationState &&
-        '_id' in locationState
-    )
+    else if(locationState && ('_id' in locationState))
         pageMode = 'edit';
+
+    console.log('locationState',locationState);
 
     useEffect(() => {
 
-        if(pageMode === 'edit'){
+        if(pageMode === 'add')
+            ResetInputs();
+        else if(pageMode === 'edit'){
             
             dispatchTitle({
                 type: 'INPUT_ON_CHANGE',
@@ -377,14 +382,12 @@ function Note(){
 
             setCKEditorContent(locationState.note);
         }
-
-    },[]);
+    },[pageMode]);
 
     useEffect(() => {
         fetchScopesHandler();
     },[fetchScopesHandler]);
 
-    // console.log('add note component is rendered');
     return (
         <div className="add-note-page p-3">
             {
