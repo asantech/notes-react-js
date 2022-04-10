@@ -217,10 +217,10 @@ function Nav(props){
                             </Link>
                         </li>
                         <li>
-                            <Link to="/add-scope" className="tooltip-box" exact="true" data-tip data-for="add-scope-tip">
+                            <Link to="/scope" className="tooltip-box" exact="true" data-tip data-for="scope-tip">
                                 <FolderPlus/>
-                                <ReactTooltip id="add-scope-tip" place="bottom" effect="solid" arrow>
-                                    Add Scope
+                                <ReactTooltip id="scope-tip" place="bottom" effect="solid" arrow>
+                                    Scope
                                 </ReactTooltip>
                             </Link>
                         </li>
@@ -284,7 +284,7 @@ function Nav(props){
                             <Link to="/help-center" className="tooltip-box" exact="true" data-tip data-for="help-center-tip">
                                 <QuestionCircle/>
                                 <ReactTooltip id="help-center-tip" place="bottom" effect="solid">
-                                    App Info
+                                    Help Center
                                 </ReactTooltip>
                             </Link>
                         </li>

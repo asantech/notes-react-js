@@ -1,5 +1,7 @@
 import React , { useState , Fragment } from 'react';
 
+import { useSelector } from 'react-redux';
+
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
@@ -8,11 +10,9 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
-import { useSelector } from 'react-redux';
-
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
-function AddScope(){
+function Scope(){
 
     const [name, setName] = useState('');
     const [nameIsValid,setNameIsValid] = useState(true);
@@ -156,4 +156,4 @@ function AddScope(){
     ); 
 }
 
-export default AddScope;
+export default Scope;

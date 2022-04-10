@@ -2,13 +2,78 @@ import React , { useState, useEffect, useCallback, Fragment } from 'react';
 
 import { useSelector } from 'react-redux';
 
+import { useNavigate } from 'react-router-dom';
+
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import { Pencil, Trash, ArrowRepeat } from 'react-bootstrap-icons';
 
+import { confirmDel } from '../shared/funcs/ConfirmDel';
+
 import { useHttpClient } from '../shared/hooks/http-hook';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
+
+function NoteListRow(props){
+
+    const navigate = useNavigate();
+
+    const {isLoading: scopeDelLoading, sendReq: sendScopeDelReq, err: scopeDelErr, clearErr: clearScopeDelErr} = useHttpClient();
+
+    async function delBtnOnClickHandler(event){
+        if(confirmDel()){
+            clearScopeDelErr();
+    
+            const noteRowId = event.target.closest('.note-row').getAttribute('data-id');
+            try{
+                const resData = await sendScopeDelReq(
+                    `http://localhost:5000/api/scopes/${noteRowId}`,
+                    'DELETE'
+                );
+    
+                props.setNotesDatas(resData);
+            }catch(err){
+        
+            }
+        };
+    }
+
+    function EditNoteBtnOnClickHandler(){
+        navigate('../scope',{
+            state: {
+                ...props.scopeData,
+            },
+        });
+    }
+ 
+    return (
+        <tr className='note-row' data-id={props.scopeData._id}>
+            <td className="text-center">{props.i + 1}</td>
+            <td>
+                <a href={props.scopeData.name}>{props.scopeData.name}</a>
+            </td>
+            <td className="text-center">0</td>
+            <td>
+                <div className="btn-group me-2" role="group" aria-label="First group">
+                    <button type="button" className="btn btn-success btn-sm" onClick={EditNoteBtnOnClickHandler}>
+                        <i className="bi bi-trash-fill"></i>
+                        <Pencil />
+                    </button>
+                </div>
+                <div className="btn-group me-2" role="group" aria-label="Second group">
+                    <button type="button" className="btn btn-danger btn-sm" onClick={delBtnOnClickHandler}>
+                        <Trash />
+                    </button>
+                </div>
+            </td>
+            <td className={'note-row-spinner-container'+ (scopeDelLoading ? '' : ' visually-hidden')}>
+                <div className='spinner-wrapper d-flex justify-content-center align-items-center'>
+                    <div className="spinner-border spinner-border-sm text-primary" role="status"></div>
+                </div> 
+            </td>
+        </tr>
+    );
+}
 
 function ScopesManagement(){
 
@@ -16,16 +81,16 @@ function ScopesManagement(){
 
     const [scopeDatas, setScopeData] = useState([]);
 
-    const { isLoading, err, sendReq, clearErr } = useHttpClient();
+    const { isLoading: scopesAreLoading, sendReq: sendLoadScopesReq, err: loadScopesErr, clearErr:  clearLoadScopesErr} = useHttpClient();
 
     let content;
 
     const fetchScopesHandler = useCallback(async () => {
 
-        clearErr();
+        clearLoadScopesErr();
 
         try{
-            const resData = await sendReq('http://localhost:5000/api/scopes');
+            const resData = await sendLoadScopesReq('http://localhost:5000/api/scopes');
 
             const scopesArray = [];
 
@@ -57,35 +122,21 @@ function ScopesManagement(){
         );
 
     if(scopeDatas.length > 0)
-        content = scopeDatas.map((scope,i) => (
-            <tr key={i}>
-                <th scope="row">{i+1}</th>
-                <td>
-                    <a href={scope.name}>{scope.name}</a>
-                </td>
-                <td>0</td>
-                <td>
-                    <div className="btn-group me-2" role="group" aria-label="First group">
-                        <button type="button" className="btn btn-success btn-sm">
-                            <i className="bi bi-trash-fill"></i>
-                            <Pencil />
-                        </button>
-                    </div>
-                    <div className="btn-group me-2" role="group" aria-label="Second group">
-                        <button type="button" className="btn btn-danger btn-sm">
-                            <Trash />
-                        </button>
-                    </div>
-                </td>
-            </tr>
+        content = scopeDatas.map((scopeData,i) => (
+            <NoteListRow
+                key = {scopeData._id}
+                i = {i}
+                scopeData = {scopeData}
+                // setNotesDatas = {setNotesDatas}
+            />
         ));
 
-    if(err)
+    if(loadScopesErr)
         content = <tr>
-            <td colSpan="4">{err}</td>
+            <td colSpan="4">{loadScopesErr}</td>
         </tr>;
 
-    if(isLoading)
+    if(scopesAreLoading)
         content = <tr>
             <td colSpan="4">Loading ...</td>
         </tr>;

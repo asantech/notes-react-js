@@ -158,7 +158,8 @@ function Note(){
     const [selectedScopeId, setSelectedScopeId] = useState('');
     const [ckEditorContent, setCKEditorContent] = useState('');
 
-    const [pageMode, setPageMode] = useState(null);
+    // const [pageMode, setPageMode] = useState(null);
+    let pageMode = null;
 
     const [titleState, dispatchTitle] = useReducer(titleReducer, {
         value: '',
@@ -247,13 +248,11 @@ function Note(){
 
             setScopeData(resData);
 
-            // console.log('pageMode',pageMode);
-
-            // if( 
-            //     pageMode === 'add' &&
-            //     resData.length 
-            // )
-            //     setSelectedScopeId(resData[0]._id);
+            if( 
+                pageMode === 'add' &&
+                resData.length 
+            )
+                setSelectedScopeId(resData[0].name);
         }catch(err){
 
         }
@@ -269,7 +268,7 @@ function Note(){
 
         dispatchSrc({
             type: 'SRC_ON_SUBMIT',
-        })
+        });
 
         if(!titleState.isValid)  
             validationErrsMsgs.push('title is empty');
@@ -305,7 +304,7 @@ function Note(){
                         srcTypeId: srcState.id,
                         note: ckEditorContent,
                     };
-
+       
                     if(pageMode === 'edit')
                         paramsObj._id = location.state._id;
 
@@ -319,7 +318,7 @@ function Note(){
                 }())
             );
 
-            (function ResetAllELements(){
+            (function AfterSubmitSuccess(){
                 if(pageMode === 'add'){
                     dispatchTitle({});
                     setType(0);
@@ -327,7 +326,7 @@ function Note(){
                         type: 'SRC_RESET',
                     });
                     setCKEditorContent('');
-                }else
+                }else if(pageMode === 'edit')
                     navigate('/notes-management');
             })();
         }catch(err){
@@ -335,16 +334,19 @@ function Note(){
         }
     }
 
+    let locationState = location.state;
+    if(!locationState)
+        pageMode = 'add';
+    else if(
+        locationState &&
+        '_id' in locationState
+    )
+        pageMode = 'edit';
+
     useEffect(() => {
 
-        let locationState = location.state;
-        if(!locationState)
-            setPageMode('add');
-        if(
-            locationState &&
-            '_id' in locationState
-        ){
-            setPageMode('edit');
+        if(pageMode === 'edit'){
+            
             dispatchTitle({
                 type: 'INPUT_ON_CHANGE',
                 val: locationState.title,
@@ -375,6 +377,7 @@ function Note(){
 
             setCKEditorContent(locationState.note);
         }
+
     },[]);
 
     useEffect(() => {
@@ -431,7 +434,7 @@ function Note(){
                                 <select className="form-select" aria-label="Default select example" value={selectedScopeId} onChange={scopeOnChangeHandler}>
                                     {
                                         scopeDatas.map((scope) => (
-                                            <option key={scope._id} value={scope._id}>{scope.name}</option>
+                                            <option key={scope._id} value={scope.name}>{scope.name}</option>
                                         ))
                                     }
                                 </select>

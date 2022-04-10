@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect} from 'react';
+import { useSelector, useDispatch} from 'react-redux';
+
+import { authActions } from './store/auth';
 
 import { Routes, Route } from 'react-router-dom';
 
@@ -8,7 +10,7 @@ import { NotableElementsContextProvider } from './contexts/notable-elements-cont
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import Home from './pages/Home';
-import AddScope from './pages/AddScope';
+import Scope from './pages/Scope';
 import ScopesManagement from './pages/ScopesManagement';
 import Note from './pages/Note';
 import NotesManagement from './pages/NotesManagement';
@@ -27,8 +29,13 @@ import './App.css';
 function App() {
 
   const auth = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   const [selectedLang, setLang] = useState('en');
+
+  useEffect(()=>{
+      dispatch(authActions.isSignedIn());
+  },[]);
   
   return (
     <div className='app-segment'>
@@ -44,7 +51,7 @@ function App() {
               <Route path='/sign-up' element={<SignUp/>}/>
               <Route exact path='/sign-in' element={<SignIn/>}/>
               <Route exact path='/home' element={<Home/>}/>
-              <Route exact path='/add-scope' element={<AddScope/>}/>
+              <Route exact path='/scope' element={<Scope/>}/>
               <Route exact path='/scopes-management' element={<ScopesManagement/>}/>
               <Route exact path='/note' element={<Note/>}/>
               <Route exact path='/notes-management' element={<NotesManagement/>}/>

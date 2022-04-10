@@ -16,6 +16,10 @@ const authSlice = createSlice({
             localStorage.removeItem('userIsSignedIn');
             state.userIsSignedIn = false;
         },
+        isSignedIn(state){
+            if(localStorage['userIsSignedIn'] === '1')
+                state.userIsSignedIn = true;
+        }
     },
 });
 

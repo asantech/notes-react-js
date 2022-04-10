@@ -54,7 +54,7 @@ function NoteListRow(props){
         <tr className='note-row' data-id={props.note._id}>
             <td>{props.i + 1}</td>
             <td>{props.note.title}</td>
-            {/* <td>{note.scope}</td> */}
+            <td>{props.note.scopeId}</td>
             <td>
                 <div className="btn-group me-2" role="group" aria-label="First group">
                     <button type="button" className="btn btn-warning btn-sm" onClick={ObserveNoteBtnOnClickHandler}>
@@ -78,8 +78,7 @@ function NoteListRow(props){
                 </div> 
             </td>
         </tr>
-    )
-
+    );
 }
 
 function NotesManagement(){
@@ -165,7 +164,7 @@ function NotesManagement(){
                                     <tr>
                                         <th className="col">R</th>
                                         <th className="col">Note Title</th>
-                                        {/* <th className="col">Scope</th> */}
+                                        <th className="col">Scope</th>
                                         <th className="col">Actions</th>
                                     </tr>
                                 </thead>
