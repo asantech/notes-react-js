@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 
 import { useDispatch } from 'react-redux';
 
-import { authActions } from '../store/auth'
+import { signIn } from '../store/auth-actions'
 
 import { useNavigate } from 'react-router-dom';
 
@@ -226,7 +226,7 @@ function SignUp(){
             );
  
             signUpFormDimmerDisplay('hide'); 
-            dispatch(authActions.signIn());
+            dispatch(signIn());
             navigate('../home', { replace: true });
         }catch(err){
             signUpFormDimmerDisplay('hide');
@@ -263,8 +263,8 @@ function SignUp(){
                                 </label>
                             </div>    
                             <NotableElementInfoIcon 
-                                elementLocation = 'sign-up-page'
-                                elementName = 'sign-up-page'
+                                notableElementLocation = 'sign-up-page'
+                                notableElementName = 'sign-up-page'
                             />
                         </div>     
                         <div className='sign-in-form'>

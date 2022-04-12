@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
 
-function AddElementNote(){
+function ElementNote(){
 
     const auth = useSelector(state => state.auth);
   
@@ -122,8 +122,8 @@ function AddElementNote(){
                             Element Note
                         </h4>
                         <NotableElementInfoIcon 
-                            elementLocation = 'add-element-note-page'
-                            elementName = 'add-element-note-page'
+                            notableElementLocation = 'add-element-note-page'
+                            notableElementName = 'add-element-note-page'
                         />
                     </div>
                     <div className="add-element-note-segment">
@@ -188,4 +188,4 @@ function AddElementNote(){
     ); 
 }
 
-export default AddElementNote;
+export default ElementNote;

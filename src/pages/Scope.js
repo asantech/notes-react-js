@@ -81,8 +81,8 @@ function Scope(){
                                         Add Scope
                                     </h4>
                                     <NotableElementInfoIcon 
-                                        elementLocation = 'add-scope-page'
-                                        elementName = 'add-scope-page'
+                                        notableElementLocation = 'scope-page'
+                                        notableElementName = 'scope-page'
                                     />
                                 </div>
                                 <div className="p-2 col-md-6">

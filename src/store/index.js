@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../store/auth';
-import notableElementReducer from '../store/notableElement';
+import authReducer from './auth-slice';
+import notableElementReducer from './notableElement-slice';
 
 const store = configureStore({
     reducer: {

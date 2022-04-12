@@ -1,15 +1,16 @@
-import React, { useContext } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { notableElementActions } from '../store/notableElement-slice';
 
 import { InfoCircle } from 'react-bootstrap-icons';
 
-import NotableElementsContext from '../contexts/notable-elements-context';
- 
 function NotableElementInfoIcon(props) {
 
-    const notableElementsContext = useContext(NotableElementsContext);
+    const dispatch = useDispatch();
 
     function infoCircleOnClickHandler(){
-        notableElementsContext.setNotableElementInfo(props);
+        dispatch(notableElementActions.setNotableElementInfo(props));
+        dispatch(notableElementActions.setElementNoteModalDisplay(true));
     }
 
     return (

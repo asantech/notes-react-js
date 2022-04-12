@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 
 import { useDispatch } from 'react-redux';
 
-import { authActions } from '../store/auth';
+import { signIn } from '../store/auth-actions';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -124,7 +124,7 @@ function SignIn(){
                 }),
             );
 
-            dispatch(authActions.signIn());
+            dispatch(signIn());
        
             navigate('../home', { replace: true });
         }catch(err){
@@ -162,8 +162,8 @@ function SignIn(){
                                 </label>
                             </div> 
                             <NotableElementInfoIcon 
-                                elementLocation = 'sign-in-page'
-                                elementName = 'sign-in-page'
+                                notableElementLocation = 'sign-in-page'
+                                notableElementName = 'sign-in-page'
                             />  
                         </div>   
                         <div className='sign-in-form'>

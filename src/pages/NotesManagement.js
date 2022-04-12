@@ -153,8 +153,8 @@ function NotesManagement(){
                                 Notes Management
                             </h4>
                             <NotableElementInfoIcon 
-                                elementLocation = 'notes-management-page'
-                                elementName = 'notes-management-page'
+                                notableElementLocation = 'notes-management-page'
+                                notableElementName = 'notes-management-page'
                             />
                             <ArrowRepeat className='m-2' onClick={refreshNotesList}/>
                         </div>    

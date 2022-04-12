@@ -22,8 +22,8 @@ function Sources(){
                             Sources
                         </h4>
                         <NotableElementInfoIcon 
-                            elementLocation = 'sources-page'
-                            elementName = 'sources-page'
+                            notableElementLocation = 'sources-page'
+                            notableElementName = 'sources-page'
                         />
                     </div>
                 </Fragment>

@@ -6,9 +6,11 @@ import ScopeCard from '../components/cards/ScopeCard';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
-import './Home.css';
+import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
+
+import './Home.css';
 
 function Home(){
 
@@ -43,7 +45,7 @@ function Home(){
     if(scopeDatas.length > 0)
         content = scopeDatas.map((scope,i) => (
             <ScopeCard
-                key = {'scope'+i}
+                key = {scope._id}
                 name = {scope.name}
             />
         ));
@@ -61,6 +63,15 @@ function Home(){
                 <PageUnaccessibilityMsg/>
                 :
                 <Fragment>
+                    <div className='page-title-box'>
+                        <h4 className='inline page-title'>
+                            Home
+                        </h4>
+                        <NotableElementInfoIcon 
+                            notableElementLocation = 'home-page'
+                            notableElementName = 'home-page'
+                        />
+                    </div>
                     <div className="row">
                         <div className="subject-cards-segment">
                             <div className="subject-cards-container">

@@ -344,8 +344,6 @@ function Note(){
     else if(locationState && ('_id' in locationState))
         pageMode = 'edit';
 
-    console.log('locationState',locationState);
-
     useEffect(() => {
 
         if(pageMode === 'add')
@@ -403,8 +401,8 @@ function Note(){
                             {pageMode === 'add' ? 'Add' : 'Edit'} Note
                         </h4>
                         <NotableElementInfoIcon 
-                            elementLocation = 'add-note-page'
-                            elementName = 'add-note-page'
+                            notableElementLocation = 'add-note-page'
+                            notableElementName = 'add-note-page'
                         />
                     </div>
                     <div className="add-note-segment">

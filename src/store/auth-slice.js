@@ -9,17 +9,11 @@ const authSlice = createSlice({
     initialState: initialAuthState,
     reducers: {
         signIn(state){
-            localStorage['userIsSignedIn'] = '1';
             state.userIsSignedIn = true;
         },
         signOut(state){
-            localStorage.removeItem('userIsSignedIn');
             state.userIsSignedIn = false;
         },
-        isSignedIn(state){
-            if(localStorage['userIsSignedIn'] === '1')
-                state.userIsSignedIn = true;
-        }
     },
 });
 

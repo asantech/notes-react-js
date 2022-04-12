@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import { authActions } from '../store/auth';
+import { signOut } from '../store/auth-actions';
 
 import { Link } from 'react-router-dom';
 
@@ -173,7 +173,7 @@ function Nav(props){
     }
 
     function signOutBtnOnClickHandler(){
-        dispatch(authActions.signOut());
+        dispatch(signOut());
     }
  
     return (

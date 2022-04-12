@@ -99,8 +99,8 @@ function ElementNoteManagement(){
                             Element Note Management
                         </h4>
                         <NotableElementInfoIcon 
-                            elementLocation = 'element-note-management-page'
-                            elementName = 'element-note-management-page'
+                            notableElementLocation = 'element-note-management-page'
+                            notableElementName = 'element-note-management-page'
                         />
                         <ArrowRepeat className='m-2' onClick={refreshElementsNotesList}/>
                     </div>

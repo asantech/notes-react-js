@@ -31,7 +31,7 @@ function NoteListRow(props){
                     'DELETE'
                 );
     
-                props.setNotesDatas(resData);
+                props.setScopeData(resData);
             }catch(err){
         
             }
@@ -66,7 +66,7 @@ function NoteListRow(props){
                     </button>
                 </div>
             </td>
-            <td className={'note-row-spinner-container'+ (scopeDelLoading ? '' : ' visually-hidden')}>
+            <td className={'note-row-spinner-container' + (scopeDelLoading ? '' : ' visually-hidden')}>
                 <div className='spinner-wrapper d-flex justify-content-center align-items-center'>
                     <div className="spinner-border spinner-border-sm text-primary" role="status"></div>
                 </div> 
@@ -127,7 +127,7 @@ function ScopesManagement(){
                 key = {scopeData._id}
                 i = {i}
                 scopeData = {scopeData}
-                // setNotesDatas = {setNotesDatas}
+                setScopeData = {setScopeData}
             />
         ));
 
@@ -153,8 +153,8 @@ function ScopesManagement(){
                             Scopes Management
                         </h4>
                         <NotableElementInfoIcon 
-                            elementLocation = 'scopes-management-page'
-                            elementName = 'scopes-management-page'
+                            notableElementLocation = 'scopes-management-page'
+                            notableElementName = 'scopes-management-page'
                         />
                         <ArrowRepeat className='m-2' onClick={refreshScopesList}/>
                     </div>
