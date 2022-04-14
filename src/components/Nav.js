@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback } from 'react';
+import { Fragment, useState, useCallback } from 'react';
 
 import ReactDOM from 'react-dom';
 
@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { signOut } from '../store/auth-actions';
 
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
  
@@ -187,20 +187,20 @@ function Nav(props){
                         </span>
                         <ul className='logged-out-nav-links-list nav-links-list'>
                             <li>
-                                <Link to="/sign-in" className="tooltip-box" exact="true" data-tip data-for="sign-in-tip">
+                                <NavLink to="/sign-in" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="sign-in-tip">
                                     <PersonCircle/>
                                     <ReactTooltip id="sign-in-tip" place="bottom" effect="solid">
                                         Sign In
                                     </ReactTooltip>
-                                </Link>
+                                </NavLink>
                             </li>
                             <li>
-                                <Link to="/sign-up" className="tooltip-box" exact="true" data-tip data-for="sign-up-tip">
+                                <NavLink to="/sign-up" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="sign-up-tip">
                                     <PersonPlusFill/>
                                     <ReactTooltip id="sign-up-tip" place="bottom" effect="solid">
                                         Sign Up
                                     </ReactTooltip>
-                                </Link>
+                                </NavLink>
                             </li>
                         </ul>
                     </>
@@ -209,84 +209,84 @@ function Nav(props){
                     auth.userIsSignedIn &&
                     <ul className='logged-in-nav-links-list nav-links-list'>
                         <li>
-                            <Link to="/home" className="tooltip-box" exact="true" data-tip data-for="home-tip">
+                            <NavLink to="/home" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="home-tip">
                                 <HouseDoorFill/>
                                 <ReactTooltip id="home-tip" place="bottom" effect="solid" arrow>
                                     Home
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link to="/scope" className="tooltip-box" exact="true" data-tip data-for="scope-tip">
+                            <NavLink to="/scope" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="scope-tip">
                                 <FolderPlus/>
                                 <ReactTooltip id="scope-tip" place="bottom" effect="solid" arrow>
                                     Scope
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className='tooltip-box'>
-                            <Link to="/scopes-management" exact="true" data-tip data-for="scopes-managment">
+                            <NavLink to="/scopes-management" activeclassname="active" exact="true" data-tip data-for="scopes-managment">
                                 <Folder/>
                                 <ReactTooltip id="scopes-managment" place="bottom" effect="solid">
                                     Scopes Managment
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link to="/note" className="tooltip-box" exact="true" data-tip data-for="note-tip">
+                            <NavLink to="/note" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="note-tip">
                                 <Plus/><CardText/>
                                 <ReactTooltip id="note-tip" place="bottom" effect="solid" arrow>
                                     Note
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link to="/notes-management" className="tooltip-box" exact="true" data-tip data-for="notes-management-tip">
+                            <NavLink to="/notes-management" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="notes-management-tip">
                                 <CardText/>
                                 <ReactTooltip id="notes-management-tip" place="bottom" effect="solid">
                                     Notes Management
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link to="/add-element-note" className="tooltip-box" exact="true" data-tip data-for="add-element-note-tip">
+                            <NavLink to="/add-element-note" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="add-element-note-tip">
                                 <Plus/><JournalText/>
                                 <ReactTooltip id="add-element-note-tip" place="bottom" effect="solid">
                                     Element Note
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link to="/element-note-management" className="tooltip-box" exact="true" data-tip data-for="element-note-management-tip">
+                            <NavLink to="/element-note-management" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="element-note-management-tip">
                                 <JournalText/>
                                 <ReactTooltip id="element-note-management-tip" place="bottom" effect="solid">
                                     Element Note Management
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link to="/sources" className="tooltip-box" exact="true" data-tip data-for="sources-tip">
+                            <NavLink to="/sources" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="sources-tip">
                                 <Diagram3/>
                                 <ReactTooltip id="sources-tip" place="bottom" effect="solid">
                                     Sources
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link to="/app-info" className="tooltip-box" exact="true" data-tip data-for="app-info-tip">
+                            <NavLink to="/app-info" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="app-info-tip">
                                 <InfoCircle/>
                                 <ReactTooltip id="app-info-tip" place="bottom" effect="solid">
                                     App Info
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className="right-aligned">
-                            <Link to="/help-center" className="tooltip-box" exact="true" data-tip data-for="help-center-tip">
+                            <NavLink to="/help-center" className="tooltip-box" activeclassname="active" exact="true" data-tip data-for="help-center-tip">
                                 <QuestionCircle/>
                                 <ReactTooltip id="help-center-tip" place="bottom" effect="solid">
                                     Help Center
                                 </ReactTooltip>
-                            </Link>
+                            </NavLink>
                         </li>
                         {
                             selectedLang === 'fa' && 
@@ -310,9 +310,9 @@ function Nav(props){
                             </button>
                         </li>
                         <li>
-                            <Link to="/" exact="true" onClick={signOutBtnOnClickHandler}>
+                            <NavLink to="/" activeclassname="active" exact="true" onClick={signOutBtnOnClickHandler}>
                                 <BoxArrowInRight/>
-                            </Link>
+                            </NavLink>
                         </li>
                     </ul>
                 }

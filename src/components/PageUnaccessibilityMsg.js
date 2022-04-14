@@ -18,7 +18,6 @@ function PageUnaccessibilityMsg() {
                     (sign up page)
                 </Link>
             </p>
-            
         </div>
     );
 }

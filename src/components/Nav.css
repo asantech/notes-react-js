@@ -65,6 +65,7 @@ nav .nav-links-list li.bordered:hover{
     background-color: #424750;
 }
 
+nav .nav-links-list li a.active,
 nav .nav-links-list li:hover a,
 nav .nav-links-list li:hover button{
     color: #61dafb;

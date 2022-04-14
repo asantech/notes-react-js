@@ -1,5 +1,5 @@
-import React, { useState, useEffect} from 'react';
-import { useSelector, useDispatch} from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { isSignedIn } from './store/auth-actions';
 
@@ -44,8 +44,8 @@ function App() {
         />
         <div className='pages-segment'>
           <Routes>
-            <Route path='/' element={auth.userIsSignedIn ? <Home/> : <SignIn/>}/>
-            <Route path='/sign-up' element={<SignUp/>}/>
+            <Route exact path='/' element={auth.userIsSignedIn ? <Home/> : <SignIn/>}/>
+            <Route exact path='/sign-up' element={<SignUp/>}/>
             <Route exact path='/sign-in' element={<SignIn/>}/>
             <Route exact path='/home' element={<Home/>}/>
             <Route exact path='/scope' element={<Scope/>}/>
