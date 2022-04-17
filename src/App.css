@@ -24,8 +24,8 @@ button{
 
 .ck.ck-content{
     background-color: #f8f8f8;
-    border: 1px solid lightgray;
-    border-top: none;
+    border: 1px solid lightgray !important;
+    border-top: none !important;
 }
 
 .toast-container{

@@ -6,6 +6,8 @@ import ScopeCard from '../components/cards/ScopeCard';
 
 import { useHttpClient } from '../shared/hooks/http-hook';
 
+import { ArrowRepeat } from 'react-bootstrap-icons';
+
 import NotableElementInfoIcon from '../components/NotableElementInfoIcon';
 
 import PageUnaccessibilityMsg from '../components/PageUnaccessibilityMsg';
@@ -40,6 +42,10 @@ function Home(){
         fetchScopesHandler();
     },[fetchScopesHandler]);
 
+    function refreshPageData(){
+        fetchScopesHandler();
+    }
+
     let content = <p>No subjects added</p>;
 
     if(scopeDatas.length > 0)
@@ -71,6 +77,7 @@ function Home(){
                             notableElementLocation = 'home-page'
                             notableElementName = 'home-page'
                         />
+                        <ArrowRepeat className='m-2' onClick={refreshPageData}/>
                     </div>
                     <div className="row">
                         <div className="subject-cards-segment">
