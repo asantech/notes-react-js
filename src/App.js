@@ -1,13 +1,9 @@
-import React , {Suspense, useState, useEffect } from 'react';
+import React , { Suspense, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { isSignedIn } from './store/auth-actions';
 
 import { Routes, Route } from 'react-router-dom';
-
-import Nav from'./components/Nav';
-
-import ElementNoteModal  from './components/ElementNoteModal';
 
 import './App.css';
 
@@ -25,7 +21,9 @@ const AppInfo = React.lazy(() => import('./pages/AppInfo'));
 const HelpCenter = React.lazy(() => import('./pages/HelpCenter'));
 const PageNotFound = React.lazy(() => import('./pages/PageNotFound'));
 
-// const Nav = React.lazy(() => import('./pages/Nav'));
+const Nav = React.lazy(() => import('./components/Nav'));
+
+const ElementNoteModal = React.lazy(() => import('./components/ElementNoteModal'));
 
 function App() {
 
