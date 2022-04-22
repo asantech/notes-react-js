@@ -1,4 +1,4 @@
-import { createRandomNum } from "./CreateRandomNum";
+import { createRandomNum } from './CreateRandomNum';
 
 export function confirmDel(){
     let 
